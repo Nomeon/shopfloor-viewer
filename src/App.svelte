@@ -4,6 +4,7 @@
 	import { IfcViewerAPI } from "web-ifc-viewer";
 	import { MeshLambertMaterial } from "three";
 	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
+	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte';
 	import MdInfo from 'svelte-icons/md/MdInfo.svelte'
 	import MdHome from 'svelte-icons/md/MdHome.svelte'
 
@@ -19,6 +20,9 @@
 	let container;
 	let propertyData;
 
+	let selectedSubset;
+
+	let isolateActive = false;
 	let detailsActive = false;
 	let greyButtons = true;
 
@@ -27,6 +31,8 @@
 	let workstations;
 	let workstation = 'All';
 	let wsObject;
+
+	let selectedIDs = [];
 	let subsets = {};
 
 
@@ -72,6 +78,11 @@
 			const found = await viewer.IFC.selector.pickIfcItem();
 			if (found) {
 				propertyData = await getItemProperties(found.id)
+				if (isolateActive) {
+					selectedIDs = [];
+					selectedIDs.push(found.id)
+					isolate(selectedIDs)
+				}
 			} else {
 				viewer.IFC.selector.unpickIfcItems();
 			}
@@ -88,9 +99,24 @@
 		detailsActive = !detailsActive;
 	}
 
+	function toggleIsolate(ws) {
+	//------------------- Isolate Button -------------------
+		isolateActive = !isolateActive;
+		if (!isolateActive) {
+			if (selectedSubset) {
+				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'selected');
+				viewer.IFC.selector.unpickIfcItems();
+				replaceModelBySubset(viewer, activeModel, ws);
+			}
+		}
+	}
+
 	function toggleWorkstation(ws) {
 	//------------------- Workstation Button -------------------
 		viewer.IFC.selector.unpickIfcItems();
+		if (selectedSubset) {
+			viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'selected');
+		}
 		replaceModelBySubset(viewer, activeModel, ws)
 	}
 
@@ -151,7 +177,7 @@
 	//------------------- Replaces current model with subset -------------------
 		const items = viewer.context.items;
 		const subset = subsets[id];
-		items.pickableIfcModels = items.pickableIfcModels.filter((model) => model.modelID !== ifcModel.modelID);
+		// items.pickableIfcModels = items.pickableIfcModels.filter((model) => model.modelID !== ifcModel.modelID);
 
 		for (const key in subsets) {
 			if (key !== id) {
@@ -162,9 +188,35 @@
 		ifcModel.removeFromParent();
 		items.ifcModels = [];
 		items.ifcModels.push(subset);
-		activeModel = subset;
-		items.pickableIfcModels.push(subset);
+		activeModel = items.ifcModels[0];
+		togglePickable(subset, true)
 		viewer.context.scene.add(subset);
+		console.log(items.pickableIfcModels)
+	}
+
+	function isolate(ids) {
+	//------------------- Isolates selected item -------------------
+		const scene = viewer.context.getScene();
+		activeModel.removeFromParent();
+		selectedSubset = viewer.IFC.loader.ifcManager.createSubset({
+			modelID: activeModel.modelID,
+			ids: ids,
+			scene: scene,
+			removePrevious: true,
+			customID: 'selected',
+		});
+		togglePickable(selectedSubset, true);
+	}
+
+	function togglePickable(subset, pickable) {
+	//------------------- Toggles pickable state of subset -------------------
+		const items = viewer.context.items;
+		if (pickable) {
+			items.pickableIfcModels = [];
+			items.pickableIfcModels.push(subset);
+		} else {
+			items.pickableIfcModels = activeModel;
+		}
 	}
 
 	async function getItemProperties(expID) {
@@ -214,6 +266,13 @@
 				<MdFileUpload/>
 			</div>
 			<span class='tooltip'>Upload een IFC bestand</span>
+		</button>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<button class='button' on:click={toggleIsolate(workstation)} class:selected="{isolateActive}" class:non-active="{greyButtons}">
+			<div class='icon'>
+				<MdFilter1/>
+			</div>
+			<span class='tooltip'>Isoleer een element</span>
 		</button>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<button class='button' on:click={toggleDetails} class:selected="{detailsActive}" class:non-active="{greyButtons}">
