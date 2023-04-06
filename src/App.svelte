@@ -1,10 +1,4 @@
 <script>
-	// Transparent mesh creation
-	// Next station -> previous transparent (other meshes transparent)
-	// BUG: Hiding element on WS
-	// BUG: Isolating element resets to full model
-	// View
-
 	import { onMount } from 'svelte';
 	import { Color } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
@@ -12,8 +6,6 @@
 	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
 	import MdInfo from 'svelte-icons/md/MdInfo.svelte'
 	import MdHome from 'svelte-icons/md/MdHome.svelte'
-	import MdVisibilityOff from 'svelte-icons/md/MdVisibilityOff.svelte'
-	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte'
 
 	// Creates subset material
 	const preselectMat = new MeshLambertMaterial({
@@ -27,8 +19,6 @@
 	let container;
 	let propertyData;
 
-	let isolateActive = false;
-	let hideActive = false;
 	let detailsActive = false;
 	let greyButtons = true;
 
@@ -37,16 +27,14 @@
 	let workstations;
 	let workstation = 'All';
 	let wsObject;
-
-	let selectedIDs = [];
 	let subsets = {};
+
 
 	onMount(async () => {
 	//------------------- Creates the viewer -------------------
 		viewer = setupScene(container);
 	})
 	
-
 	function setupScene(container) {
 	//------------------- Sets up ThreeJS scene -------------------
 		const viewer = new IfcViewerAPI({
@@ -54,7 +42,7 @@
 		});
 		viewer.IFC.applyWebIfcConfig({
 			COORDINATE_TO_ORIGIN: true,
-      		USE_FAST_BOOLS: true
+      		USE_FAST_BOOLS: true,
     	})
 		viewer.IFC.setWasmPath("wasm/");
 		return viewer;
@@ -71,7 +59,6 @@
 		const results = await createWsArray(JSONdata, model);
 		[workstations, wsObject] = results;
 
-		setupEvents(viewer, model);
 		createSubsets(viewer, model, wsObject)
 		replaceModelBySubset(viewer, model, "All")
 
@@ -79,43 +66,36 @@
 		greyButtons = false
 	}
 
+	async function pickItem() {
+	//------------------- Handles item picking -------------------
+		if (viewer) {
+			const found = await viewer.IFC.selector.pickIfcItem();
+			if (found) {
+				propertyData = await getItemProperties(found.id)
+			} else {
+				viewer.IFC.selector.unpickIfcItems();
+			}
+		}
+	}
+
+	async function prePickItem() {
+	//------------------- Pre-picks item -------------------
+		await viewer.IFC.selector.prePickIfcItem();
+	}
+
 	function toggleDetails() {
 	//------------------- Details Button -------------------
 		detailsActive = !detailsActive;
-		const scene = viewer.context.getScene();
-		console.log(scene)
-	}
-
-	function setupEvents(viewer, model) {
-	//------------------- Sets up events -------------------
-		window.onmousemove = async () => {
-			await viewer.IFC.selector.prePickIfcItem();
-		}
-		window.onclick = async () => {
-			viewer.IFC.selector.unpickIfcItems();
-			const selected = await viewer.IFC.selector.pickIfcItem();
-			if (!selected) return;
-
-			if (isolateActive) {
-				let selectedIDs = [];
-				selectedIDs.push(selected.id);
-				isolate(selectedIDs, viewer, model);
-			};
-
-			if (hideActive) {
-				selectedIDs.push(selected.id);
-				hide(selectedIDs, viewer, model);
-			};
-		};
 	}
 
 	function toggleWorkstation(ws) {
 	//------------------- Workstation Button -------------------
+		viewer.IFC.selector.unpickIfcItems();
 		replaceModelBySubset(viewer, activeModel, ws)
 	}
 
 	async function createWsArray(JSONdata, model) {
-	//------------------- Creates array of workstations and IDs -------------------
+	//------------------- Creates arrays of workstations and IDs -------------------
 		let elementProp = [];
 		let workStations = [];
 
@@ -150,7 +130,7 @@
 		return [workStations, objectWS]
 	}
 
-function createSubsets(viewer, model, objects) {
+	function createSubsets(viewer, model, objects) {
 	//------------------- Creates subsets -------------------
 		const scene = viewer.context.getScene();
 
@@ -168,6 +148,7 @@ function createSubsets(viewer, model, objects) {
 	}
 
 	function replaceModelBySubset(viewer, ifcModel, id) {
+	//------------------- Replaces current model with subset -------------------
 		const items = viewer.context.items;
 		const subset = subsets[id];
 		items.pickableIfcModels = items.pickableIfcModels.filter((model) => model.modelID !== ifcModel.modelID);
@@ -184,19 +165,6 @@ function createSubsets(viewer, model, objects) {
 		activeModel = subset;
 		items.pickableIfcModels.push(subset);
 		viewer.context.scene.add(subset);
-	}
-
-
-	async function setPropExpressId() {
-	//------------------- Handles item picking -------------------
-		if (viewer) {	// && activeMod === 'All'
-			const found = await viewer.IFC.selector.pickIfcItem();
-			if (found) {
-				propertyData = await getItemProperties(found.id)
-			} else {
-				viewer.IFC.selector.unpickIfcItems();
-			}
-		}
 	}
 
 	async function getItemProperties(expID) {
@@ -303,6 +271,7 @@ function createSubsets(viewer, model, objects) {
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id="viewer-container"
 		bind:this={container}
-		on:click={setPropExpressId}>
+		on:click={pickItem}
+		on:mousemove={prePickItem}>
 	</div>
 </main>
