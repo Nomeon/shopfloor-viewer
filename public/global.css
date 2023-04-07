@@ -191,7 +191,7 @@ input:checked + .ws {
 	width: 100vw;
 	left: 50%;
 	bottom: 2rem;
-	transform: translateX(calc(-50%));
+	transform: translate(calc(-50%), 0);
 }
 
 #viewer-container {

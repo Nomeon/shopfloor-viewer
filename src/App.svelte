@@ -1,12 +1,14 @@
 <script>
 	import { onMount } from 'svelte';
-	import { Color } from "three";
+	import { fly } from 'svelte/transition';
+	import { cubicInOut } from 'svelte/easing';
+	import { Color, MeshLambertMaterial } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
-	import { MeshLambertMaterial } from "three";
 	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
 	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte';
-	import MdInfo from 'svelte-icons/md/MdInfo.svelte'
-	import MdHome from 'svelte-icons/md/MdHome.svelte'
+	import MdCrop from 'svelte-icons/md/MdCrop.svelte';
+	import MdInfo from 'svelte-icons/md/MdInfo.svelte';
+	import MdHome from 'svelte-icons/md/MdHome.svelte';
 
 	// Creates subset material
 	const preselectMat = new MeshLambertMaterial({
@@ -18,20 +20,20 @@
 
 	let fileInput;
 	let container;
+	let viewer;
 	let propertyData;
 
-	let selectedSubset;
-
 	let isolateActive = false;
+	let clipperActive = false;
 	let detailsActive = false;
 	let greyButtons = true;
 
-	let viewer;
+	let wsObject;
 	let activeModel;
 	let workstations;
 	let workstation = 'All';
-	let wsObject;
 
+	let selectedSubset;
 	let selectedIDs = [];
 	let subsets = {};
 
@@ -57,7 +59,7 @@
 	const loadIfc = async (event) => {
 	//------------------- Loading IFC -------------------
 		const model = await viewer.IFC.loadIfc(event.target.files[0]);
-		await viewer.shadowDropper.renderShadow(model.modelID);
+		// await viewer.shadowDropper.renderShadow(model.modelID);
 
 		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
 		let JSONdata = await JSONblob[0].text();
@@ -70,6 +72,18 @@
 
 		propertyData = await getItemProperties(model.modelID)
 		greyButtons = false
+	}
+
+	function handleKeyPress(e) {
+	//------------------- Handles key presses -------------------
+		if (e.key == 'Escape' && viewer.clipper.active) {
+			viewer.clipper.deleteAllPlanes();
+		}
+	}
+
+	async function prePickItem() {
+	//------------------- Pre-picks item -------------------
+		await viewer.IFC.selector.prePickIfcItem();
 	}
 
 	async function pickItem() {
@@ -89,16 +103,6 @@
 		}
 	}
 
-	async function prePickItem() {
-	//------------------- Pre-picks item -------------------
-		await viewer.IFC.selector.prePickIfcItem();
-	}
-
-	function toggleDetails() {
-	//------------------- Details Button -------------------
-		detailsActive = !detailsActive;
-	}
-
 	function toggleIsolate(ws) {
 	//------------------- Isolate Button -------------------
 		isolateActive = !isolateActive;
@@ -109,6 +113,17 @@
 				replaceModelBySubset(viewer, activeModel, ws);
 			}
 		}
+	}
+
+	function toggleClipper() {
+	//------------------- Plane Button -------------------
+		clipperActive = !clipperActive;
+		viewer.clipper.active = clipperActive
+	}
+
+	function toggleDetails() {
+	//------------------- Details Button -------------------
+		detailsActive = !detailsActive;
 	}
 
 	function toggleWorkstation(ws) {
@@ -165,7 +180,7 @@
 				modelID: model.modelID,
 				ids: objects[key],
 				scene: scene,
-				removePrevious: false,
+				removePrevious: true,
 				customID: key,
 				material: preselectMat, // REMOVING BREAKS FUNCTIONALITY
 			});
@@ -173,25 +188,23 @@
 		}
 	}
 
-	function replaceModelBySubset(viewer, ifcModel, id) {
+	function replaceModelBySubset(viewer, model, id) {
 	//------------------- Replaces current model with subset -------------------
 		const items = viewer.context.items;
 		const subset = subsets[id];
-		// items.pickableIfcModels = items.pickableIfcModels.filter((model) => model.modelID !== ifcModel.modelID);
 
 		for (const key in subsets) {
 			if (key !== id) {
-				viewer.IFC.loader.ifcManager.removeFromSubset(0, wsObject[key], key)
+				viewer.IFC.loader.ifcManager.removeFromSubset(model.modelID, wsObject[key], key)
 				subsets[key].removeFromParent()
 			}
 		}
-		ifcModel.removeFromParent();
+		model.removeFromParent();
 		items.ifcModels = [];
 		items.ifcModels.push(subset);
 		activeModel = items.ifcModels[0];
 		togglePickable(subset, true)
 		viewer.context.scene.add(subset);
-		console.log(items.pickableIfcModels)
 	}
 
 	function isolate(ids) {
@@ -260,22 +273,25 @@
 <main>
 	<aside class="toolbar">
 		<input style="display:none" type="file" accept=".ifc" on:change={(e)=>loadIfc(e)} bind:this={fileInput} >
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<button class='button' on:click={()=>{fileInput.click();}}>
+		<button class='button' on:click={()=>{fileInput.click()}} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdFileUpload/>
 			</div>
 			<span class='tooltip'>Upload een IFC bestand</span>
 		</button>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<button class='button' on:click={toggleIsolate(workstation)} class:selected="{isolateActive}" class:non-active="{greyButtons}">
+		<button class='button' class:selected="{isolateActive}" class:non-active="{greyButtons}" on:click={toggleIsolate(workstation)} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdFilter1/>
 			</div>
 			<span class='tooltip'>Isoleer een element</span>
 		</button>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<button class='button' on:click={toggleDetails} class:selected="{detailsActive}" class:non-active="{greyButtons}">
+		<button class='button' class:selected="{clipperActive}" class:non-active="{greyButtons}" on:click={toggleClipper} on:keydown={handleKeyPress}>
+			<div class='icon'>
+				<MdCrop/>
+			</div>
+			<span class='tooltip'>Maak doorsnedes</span>
+		</button>
+		<button class='button' class:selected="{detailsActive}" class:non-active="{greyButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdInfo/>
 			</div>
@@ -283,7 +299,7 @@
 		</button>
 	</aside>
 	{#if detailsActive}
-	<div class="side-menu-right">
+	<div class="side-menu-right" transition:fly="{{ x: '100%', easing: cubicInOut}}">
 		<div class="right-menu-item">
 		    {#await propertyData then pset}
 				<h4>{pset.name}</h4>
@@ -310,27 +326,27 @@
 	</div>
 	{/if}
 	{#if (activeModel != null)}
-		<div class='wsbar'>
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<div class='wsbar' in:fly="{{ y: '100%', easing: cubicInOut}}">
 			<label class='button'>
-				<input type='radio' bind:group={workstation} value={'All'} on:click={() => toggleWorkstation('All')}>
+				<input type='radio' bind:group={workstation} value={'All'} on:click={() => toggleWorkstation('All')} on:keydown={handleKeyPress}>
 				<div class='all icon'>
 					<MdHome/>
 				</div>
 			</label>
 			{#each workstations as ws}
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<label class='button'>
-					<input type='radio' bind:group={workstation} value={ws} on:click={() => toggleWorkstation(ws)}>
+					<input type='radio' bind:group={workstation} value={ws} on:click={() => toggleWorkstation(ws)} on:keydown={handleKeyPress}>
 					<span class='ws'>{ws}</span>
 				</label>
 			{/each}
 		</div>
 	{/if}
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<div id="viewer-container"
 		bind:this={container}
 		on:click={pickItem}
-		on:mousemove={prePickItem}>
+		on:keydown={handleKeyPress}
+		on:mousemove={prePickItem}
+		on:dblclick={() => {if (viewer.clipper.active) {viewer.clipper.createPlane()}}}>
 	</div>
 </main>
+<svelte:window on:keydown|preventDefault={handleKeyPress}/>
