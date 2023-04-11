@@ -25,10 +25,7 @@
   "dependencies": {
     "file-saver": "^2.0.5",
     "sirv-cli": "^1.0.0",
-    "three": "^0.143.0",
     "three-mesh-bvh": "^0.5.23",
-    "web-ifc": "0.0.35",
-    "web-ifc-three": "0.0.119",
     "web-ifc-viewer": "^1.0.209"
   }
 }
