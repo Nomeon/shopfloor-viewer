@@ -59,7 +59,6 @@
 	const loadIfc = async (event) => {
 	//------------------- Loading IFC -------------------
 		const model = await viewer.IFC.loadIfc(event.target.files[0]);
-		// await viewer.shadowDropper.renderShadow(model.modelID);
 
 		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
 		let JSONdata = await JSONblob[0].text();
@@ -176,13 +175,14 @@
 		const scene = viewer.context.getScene();
 
 		for (const key in objects) {
+			let wsID = 'subset';
+			let id = key.concat(wsID)	//Necessary to function, bug/feature?
 			const subset = viewer.IFC.loader.ifcManager.createSubset({
 				modelID: model.modelID,
 				ids: objects[key],
 				scene: scene,
 				removePrevious: true,
-				customID: key,
-				material: preselectMat, // REMOVING BREAKS FUNCTIONALITY
+				customID: id,
 			});
 			subsets[key] = subset;
 		}

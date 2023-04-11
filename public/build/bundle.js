@@ -123798,7 +123798,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (301:1) {#if detailsActive}
+    // (302:1) {#if detailsActive}
     function create_if_block_1(ctx) {
     	let div1;
     	let div0;
@@ -123825,9 +123825,9 @@ var app = (function () {
     			div0 = element("div");
     			info.block.c();
     			attr_dev(div0, "class", "right-menu-item");
-    			add_location(div0, file, 302, 2, 9675);
+    			add_location(div0, file, 303, 2, 9679);
     			attr_dev(div1, "class", "side-menu-right");
-    			add_location(div1, file, 301, 1, 9590);
+    			add_location(div1, file, 302, 1, 9594);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -123874,7 +123874,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(301:1) {#if detailsActive}",
+    		source: "(302:1) {#if detailsActive}",
     		ctx
     	});
 
@@ -123896,7 +123896,7 @@ var app = (function () {
     	return block;
     }
 
-    // (304:37)       <h4>{pset.name}
+    // (305:37)       <h4>{pset.name}
     function create_then_block(ctx) {
     	let h4;
     	let t0_value = /*pset*/ ctx[44].name + "";
@@ -123951,19 +123951,19 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(h4, file, 304, 4, 9749);
+    			add_location(h4, file, 305, 4, 9753);
     			attr_dev(i, "id", "description");
-    			add_location(i, file, 305, 4, 9775);
-    			add_location(br, file, 305, 46, 9817);
-    			add_location(hr, file, 306, 4, 9828);
+    			add_location(i, file, 306, 4, 9779);
+    			add_location(br, file, 306, 46, 9821);
+    			add_location(hr, file, 307, 4, 9832);
     			attr_dev(th0, "id", "col1");
-    			add_location(th0, file, 310, 7, 9881);
+    			add_location(th0, file, 311, 7, 9885);
     			attr_dev(th1, "id", "col2");
-    			add_location(th1, file, 311, 7, 9917);
-    			add_location(tr, file, 309, 6, 9868);
-    			add_location(thead, file, 308, 5, 9853);
-    			add_location(tbody, file, 314, 5, 9976);
-    			add_location(table, file, 307, 4, 9839);
+    			add_location(th1, file, 312, 7, 9921);
+    			add_location(tr, file, 310, 6, 9872);
+    			add_location(thead, file, 309, 5, 9857);
+    			add_location(tbody, file, 315, 5, 9980);
+    			add_location(table, file, 308, 4, 9843);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h4, anchor);
@@ -124035,14 +124035,14 @@ var app = (function () {
     		block,
     		id: create_then_block.name,
     		type: "then",
-    		source: "(304:37)       <h4>{pset.name}",
+    		source: "(305:37)       <h4>{pset.name}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (316:6) {#each pset.props as row}
+    // (317:6) {#each pset.props as row}
     function create_each_block_1(ctx) {
     	let tr;
     	let td0;
@@ -124064,10 +124064,10 @@ var app = (function () {
     			t2 = text(t2_value);
     			t3 = space();
     			attr_dev(td0, "id", "col1");
-    			add_location(td0, file, 317, 8, 10039);
+    			add_location(td0, file, 318, 8, 10043);
     			attr_dev(td1, "id", "col2");
-    			add_location(td1, file, 318, 8, 10078);
-    			add_location(tr, file, 316, 7, 10025);
+    			add_location(td1, file, 319, 8, 10082);
+    			add_location(tr, file, 317, 7, 10029);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -124091,7 +124091,7 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(316:6) {#each pset.props as row}",
+    		source: "(317:6) {#each pset.props as row}",
     		ctx
     	});
 
@@ -124113,7 +124113,7 @@ var app = (function () {
     	return block;
     }
 
-    // (328:1) {#if (activeModel != null)}
+    // (329:1) {#if (activeModel != null)}
     function create_if_block(ctx) {
     	let div1;
     	let label;
@@ -124155,13 +124155,13 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = 'All';
     			input.value = input.__value;
-    			add_location(input, file, 330, 4, 10337);
+    			add_location(input, file, 331, 4, 10341);
     			attr_dev(div0, "class", "all icon");
-    			add_location(div0, file, 331, 4, 10472);
+    			add_location(div0, file, 332, 4, 10476);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 329, 3, 10309);
+    			add_location(label, file, 330, 3, 10313);
     			attr_dev(div1, "class", "wsbar");
-    			add_location(div1, file, 328, 2, 10241);
+    			add_location(div1, file, 329, 2, 10245);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -124254,14 +124254,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(328:1) {#if (activeModel != null)}",
+    		source: "(329:1) {#if (activeModel != null)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (336:3) {#each workstations as ws}
+    // (337:3) {#each workstations as ws}
     function create_each_block(ctx) {
     	let label;
     	let input;
@@ -124293,11 +124293,11 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = input_value_value = /*ws*/ ctx[41];
     			input.value = input.__value;
-    			add_location(input, file, 337, 5, 10601);
+    			add_location(input, file, 338, 5, 10605);
     			attr_dev(span, "class", "ws");
-    			add_location(span, file, 338, 5, 10731);
+    			add_location(span, file, 339, 5, 10735);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 336, 4, 10572);
+    			add_location(label, file, 337, 4, 10576);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -124346,7 +124346,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(336:3) {#each workstations as ws}",
+    		source: "(337:3) {#each workstations as ws}",
     		ctx
     	});
 
@@ -124437,42 +124437,42 @@ var app = (function () {
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", ".ifc");
-    			add_location(input, file, 274, 2, 8439);
+    			add_location(input, file, 275, 2, 8443);
     			attr_dev(div0, "class", "icon");
-    			add_location(div0, file, 276, 3, 8639);
+    			add_location(div0, file, 277, 3, 8643);
     			attr_dev(span0, "class", "tooltip");
-    			add_location(span0, file, 279, 3, 8694);
+    			add_location(span0, file, 280, 3, 8698);
     			attr_dev(button0, "class", "button");
-    			add_location(button0, file, 275, 2, 8548);
+    			add_location(button0, file, 276, 2, 8552);
     			attr_dev(div1, "class", "icon");
-    			add_location(div1, file, 282, 3, 8922);
+    			add_location(div1, file, 283, 3, 8926);
     			attr_dev(span1, "class", "tooltip");
-    			add_location(span1, file, 285, 3, 8974);
+    			add_location(span1, file, 286, 3, 8978);
     			attr_dev(button1, "class", "button");
     			toggle_class(button1, "selected", /*isolateActive*/ ctx[4]);
     			toggle_class(button1, "non-active", /*greyButtons*/ ctx[7]);
-    			add_location(button1, file, 281, 2, 8762);
+    			add_location(button1, file, 282, 2, 8766);
     			attr_dev(div2, "class", "icon");
-    			add_location(div2, file, 288, 3, 9186);
+    			add_location(div2, file, 289, 3, 9190);
     			attr_dev(span2, "class", "tooltip");
-    			add_location(span2, file, 291, 3, 9235);
+    			add_location(span2, file, 292, 3, 9239);
     			attr_dev(button2, "class", "button");
     			toggle_class(button2, "selected", /*clipperActive*/ ctx[5]);
     			toggle_class(button2, "non-active", /*greyButtons*/ ctx[7]);
-    			add_location(button2, file, 287, 2, 9039);
+    			add_location(button2, file, 288, 2, 9043);
     			attr_dev(div3, "class", "icon");
-    			add_location(div3, file, 294, 3, 9443);
+    			add_location(div3, file, 295, 3, 9447);
     			attr_dev(span3, "class", "tooltip");
-    			add_location(span3, file, 297, 3, 9492);
+    			add_location(span3, file, 298, 3, 9496);
     			attr_dev(button3, "class", "button");
     			toggle_class(button3, "selected", /*detailsActive*/ ctx[6]);
     			toggle_class(button3, "non-active", /*greyButtons*/ ctx[7]);
-    			add_location(button3, file, 293, 2, 9296);
+    			add_location(button3, file, 294, 2, 9300);
     			attr_dev(aside, "class", "toolbar");
-    			add_location(aside, file, 273, 1, 8412);
+    			add_location(aside, file, 274, 1, 8416);
     			attr_dev(div4, "id", "viewer-container");
-    			add_location(div4, file, 343, 1, 10806);
-    			add_location(main, file, 272, 0, 8403);
+    			add_location(div4, file, 344, 1, 10810);
+    			add_location(main, file, 273, 0, 8407);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -124766,9 +124766,7 @@ var app = (function () {
     		//------------------- Loading IFC -------------------
     		const model = await viewer.IFC.loadIfc(event.target.files[0]);
 
-    		// await viewer.shadowDropper.renderShadow(model.modelID);
     		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
-
     		let JSONdata = await JSONblob[0].text();
     		JSONdata = JSON.parse(JSONdata);
     		const results = await createWsArray(JSONdata, model);
@@ -124851,14 +124849,18 @@ var app = (function () {
     		const scene = viewer.context.getScene();
 
     		for (const key in objects) {
+    			let wsID = 'subset';
+    			let id = key.concat(wsID); //Necessary to function, bug/feature?
+
     			const subset = viewer.IFC.loader.ifcManager.createSubset({
     				modelID: model.modelID,
     				ids: objects[key],
     				scene,
     				removePrevious: true,
-    				customID: key
-    			}); // material: preselectMat, // REMOVING BREAKS FUNCTIONALITY
+    				customID: id
+    			});
 
+    			// viewer.IFC.addIfcModel(subset);
     			subsets[key] = subset;
     		}
     	}
