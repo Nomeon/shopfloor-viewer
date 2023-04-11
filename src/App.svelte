@@ -4,6 +4,7 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { Color, MeshLambertMaterial } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
+	import MdVisibilityOff from 'svelte-icons/md/MdVisibilityOff.svelte'
 	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
 	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte';
 	import MdCrop from 'svelte-icons/md/MdCrop.svelte';
@@ -23,6 +24,7 @@
 	let viewer;
 	let propertyData;
 
+	let hideActive = false;
 	let isolateActive = false;
 	let clipperActive = false;
 	let detailsActive = false;
@@ -96,9 +98,29 @@
 					selectedIDs.push(found.id)
 					isolate(selectedIDs)
 				}
+				if (hideActive) {
+					selectedIDs.push(found.id)
+					hide(selectedIDs)
+					viewer.IFC.selector.unpickIfcItems();
+				}
 			} else {
 				viewer.IFC.selector.unpickIfcItems();
 			}
+		}
+	}
+
+	function toggleHide(ws) {
+	//------------------- Hide Button -------------------
+		hideActive = !hideActive;
+		if (!hideActive) {
+			if (selectedSubset) {
+				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'hidden');
+				viewer.IFC.selector.unpickIfcItems();
+				replaceModelBySubset(viewer, activeModel, ws);
+			}
+		}
+		else {
+			if (isolateActive) toggleIsolate(ws)
 		}
 	}
 
@@ -111,6 +133,9 @@
 				viewer.IFC.selector.unpickIfcItems();
 				replaceModelBySubset(viewer, activeModel, ws);
 			}
+		}
+		else {
+			if (hideActive) toggleHide(ws)
 		}
 	}
 
@@ -129,7 +154,12 @@
 	//------------------- Workstation Button -------------------
 		viewer.IFC.selector.unpickIfcItems();
 		if (selectedSubset) {
-			viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'selected');
+			try {
+				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'selected');
+			} catch (e) {}
+			try {
+				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'hidden');
+			} catch (e) {}
 		}
 		replaceModelBySubset(viewer, activeModel, ws)
 	}
@@ -207,6 +237,22 @@
 		viewer.context.scene.add(subset);
 	}
 
+	function hide(ids){
+	//------------------- Handles the hide event -------------------
+		let currentIds = wsObject[workstation]
+		let newIds = currentIds.filter(x => !ids.includes(x))
+		const scene = viewer.context.getScene();
+		activeModel.removeFromParent();
+		selectedSubset = viewer.IFC.loader.ifcManager.createSubset({
+			modelID: activeModel.modelID,
+			ids: newIds,
+			scene: scene,
+			removePrevious: true,
+			customID: 'hidden',
+		});
+		togglePickable(selectedSubset, true);	
+	}
+
 	function isolate(ids) {
 	//------------------- Isolates selected item -------------------
 		const scene = viewer.context.getScene();
@@ -278,6 +324,12 @@
 				<MdFileUpload/>
 			</div>
 			<span class='tooltip'>Upload een IFC bestand</span>
+		</button>
+		<button class='button' class:selected="{hideActive}" class:non-active="{greyButtons}" on:click={toggleHide(workstation)} on:keydown={handleKeyPress}>
+			<div class='icon'>
+				<MdVisibilityOff/>
+			</div>
+			<span class='tooltip'>Verberg elementen</span>
 		</button>
 		<button class='button' class:selected="{isolateActive}" class:non-active="{greyButtons}" on:click={toggleIsolate(workstation)} on:keydown={handleKeyPress}>
 			<div class='icon'>
