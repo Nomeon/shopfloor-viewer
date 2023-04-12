@@ -12,7 +12,6 @@
 	import MdInfo from 'svelte-icons/md/MdInfo.svelte';
 	import MdHome from 'svelte-icons/md/MdHome.svelte';
 
-
 	let fileInput;
 	let container;
 	let viewer;
@@ -38,7 +37,7 @@
 		transparent: true,
 		opacity: 0.2,
 		color: 0xffffff,
-		depthTest: false,
+		depthTest: true,
 	});
 
 
@@ -79,9 +78,28 @@
 
 	function handleKeyPress(e) {
 	//------------------- Handles key presses -------------------
-		if (e.key == 'Escape' && viewer.clipper.active) {
-			viewer.clipper.deleteAllPlanes();
-		}
+		switch (e.code) {
+			case 'Escape':
+				if (viewer.clipper.active) {
+					viewer.clipper.deleteAllPlanes();
+				}
+				break;
+			case 'KeyV':
+				toggleHide(workstation);
+				break;
+			case 'KeyI':
+				toggleIsolate(workstation);
+				break;
+			case 'KeyT':
+				toggleTransparent(workstation);
+				break;
+			case 'KeyD':
+				toggleDetails();
+				break;
+			case 'KeyC':
+				toggleClipper();
+				break;
+		};
 	}
 
 	async function prePickItem() {
@@ -94,7 +112,7 @@
 		if (viewer) {
 			const found = await viewer.IFC.selector.pickIfcItem();
 			if (found) {
-				propertyData = await getItemProperties(found.id)
+				propertyData = await getItemProperties(found.id);
 				if (isolateActive) {
 					selectedIDs = [];
 					selectedIDs.push(found.id);
@@ -107,8 +125,8 @@
 				}
 			} else {
 				viewer.IFC.selector.unpickIfcItems();
-			}
-		}
+			};
+		};
 	}
 
 	function toggleHide(ws) {
@@ -122,8 +140,8 @@
 			}
 		}
 		else {
-			if (isolateActive) toggleIsolate(ws)
-		}
+			if (isolateActive) toggleIsolate(ws);
+		};
 	}
 
 	function toggleIsolate(ws) {
@@ -137,8 +155,8 @@
 			}
 		}
 		else {
-			if (hideActive) toggleHide(ws)
-		}
+			if (hideActive) toggleHide(ws);
+		};
 	}
 
 	function toggleClipper() {
@@ -172,7 +190,7 @@
 		replaceModelBySubset(viewer, activeModel, ws);
 		if (transparentActive) {
 			showTransparentWS(ws);
-		}
+		};
 	}
 
 	async function createWsArray(JSONdata, model) {
@@ -182,33 +200,33 @@
 
 		for (var id in JSONdata) {
 			if (JSONdata[id]['type'] === 'IFCRELDEFINESBYPROPERTIES') {
-				let elementID = JSONdata[id]['RelatedObjects'][0]
-				let propSetID = JSONdata[id]['RelatingPropertyDefinition']
-				elementProp.push({[elementID] : propSetID})
-			}
-		}
+				let elementID = JSONdata[id]['RelatedObjects'][0];
+				let propSetID = JSONdata[id]['RelatingPropertyDefinition'];
+				elementProp.push({[elementID] : propSetID});
+			};
+		};
 
 		const allIDs = Array.from(new Set(model.geometry.attributes.expressID.array),);
-		let objectWS = {'All': allIDs}
+		let objectWS = {'All': allIDs};
 
 		for (var key in elementProp) {
-			let obj = Object.keys(elementProp[key])[0]
-			let propSet = JSONdata[elementProp[key][obj]]
+			let obj = Object.keys(elementProp[key])[0];
+			let propSet = JSONdata[elementProp[key][obj]];
 			for (var Sprops in propSet['HasProperties']) {
 				if (JSONdata[propSet['HasProperties'][Sprops]]['Name'] === 'Station') {
-					let propSetValue = JSONdata[propSet['HasProperties'][Sprops]]['NominalValue']
+					let propSetValue = JSONdata[propSet['HasProperties'][Sprops]]['NominalValue'];
 					if (objectWS.hasOwnProperty(propSetValue)) {
-						objectWS[propSetValue].push(parseInt(obj))
+						objectWS[propSetValue].push(parseInt(obj));
 					} else {
-						objectWS[propSetValue] = [parseInt(obj)]
-					}
+						objectWS[propSetValue] = [parseInt(obj)];
+					};
 					if (!workStations.includes(propSetValue)) {
-						workStations.push(propSetValue)
-					}
-				}
-			}
-		}
-		return [workStations, objectWS]
+						workStations.push(propSetValue);
+					};
+				};
+			};
+		};
+		return [workStations, objectWS];
 	}
 
 	function createSubsets(viewer, model, objects) {
@@ -224,7 +242,7 @@
 				customID: key,
 			});
 			subsets[key] = subset;
-		}
+		};
 	}
 
 	function replaceModelBySubset(viewer, model, id) {
@@ -241,14 +259,14 @@
 		items.ifcModels = [];
 		items.ifcModels.push(subset);
 		activeModel = items.ifcModels[0];
-		togglePickable(subset, true)
+		togglePickable(subset, true);
 		viewer.context.scene.add(subset);
 	}
 
 	function hide(ids){
 	//------------------- Handles the hide event -------------------
-		let currentIds = wsObject[workstation]
-		let newIds = currentIds.filter(x => !ids.includes(x))
+		let currentIds = wsObject[workstation];
+		let newIds = currentIds.filter(x => !ids.includes(x));
 		const scene = viewer.context.getScene();
 		activeModel.removeFromParent();
 		selectedSubset = viewer.IFC.loader.ifcManager.createSubset({
@@ -283,22 +301,22 @@
 			items.pickableIfcModels.push(subset);
 		} else {
 			items.pickableIfcModels = activeModel;
-		}
+		};
 	}
 
 	function showTransparentWS(ws) {
 	//------------------- Shows transparent workstations -------------------
-		const scene = viewer.context.getScene()
-		let wsIndex = workstations.indexOf(ws)
-		let wsBefore = workstations.slice(0, wsIndex)
-		let wsBeforeIDs = []
+		const scene = viewer.context.getScene();
+		let wsIndex = workstations.indexOf(ws);
+		let wsBefore = workstations.slice(0, wsIndex);
+		let wsBeforeIDs = [];
 		if (ws === 'All') {
-			wsBeforeIDs = []
+			wsBeforeIDs = [];
 		} else {
 			for (var i = 0; i < wsBefore.length; i++) {
-				wsBeforeIDs = wsBeforeIDs.concat(wsObject[wsBefore[i]])
-			}
-		}
+				wsBeforeIDs = wsBeforeIDs.concat(wsObject[wsBefore[i]]);
+			};
+		};
 
 		let transparentSubset = viewer.IFC.loader.ifcManager.createSubset({
 			modelID: activeModel.modelID,
@@ -308,35 +326,35 @@
 			customID: 'transparent',
 			material: transparentMat,
 		});
-		scene.add(transparentSubset)
+		scene.add(transparentSubset);
 	}
 
 	async function getItemProperties(expID) {
 	//------------------- Gets prop data of ID -------------------
-		let modID = activeModel.modelID
-		const props = await viewer.IFC.getProperties(modID, expID, true)
-		const data = await getPropertyGroups(props)
-		return data
+		let modID = activeModel.modelID;
+		const props = await viewer.IFC.getProperties(modID, expID, true);
+		const data = await getPropertyGroups(props);
+		return data;
 	}
 
 	async function getPropertyGroups(values) {
 	//------------------- Gets S parameters of item -------------------
-		const props = await values
-		let modID = activeModel.modelID
-		const properties = await viewer.IFC.getProperties(modID, props.expressID, true, true)
+		const props = await values;
+		let modID = activeModel.modelID;
+		const properties = await viewer.IFC.getProperties(modID, props.expressID, true, true);
 		
 		if (props.psets.length === 0) {
-			return {name: getProp(props.LongName), description: props.constructor.name, props: [{ name: 'Name', value: getProp(props.LongName)}, { name: 'GlobalID', value: getProp(props.GlobalId)}]}
+			return {name: getProp(props.LongName), description: props.constructor.name, props: [{ name: 'Name', value: getProp(props.LongName)}, { name: 'GlobalID', value: getProp(props.GlobalId)}]};
 		} else {
 		const propObj = await properties['psets'][0]['HasProperties'].map((p) => {
-			return { name: getProp(p.Name), value: getProp(p.NominalValue) }
-		})
+			return { name: getProp(p.Name), value: getProp(p.NominalValue) };
+		});
 		try {
 			propObj.splice(16, 1);
 			propObj.splice(9, 6);
 		} catch(e) {}
-			return {name: props.Name.value, description: props.constructor.name, props: propObj}
-		}
+			return {name: props.Name.value, description: props.constructor.name, props: propObj};
+		};
 	}
 
 	function getProp(prop) {
@@ -352,7 +370,7 @@
 <main>
 	<aside class="toolbar">
 		<input style="display:none" type="file" accept=".ifc" on:change={(e)=>loadIfc(e)} bind:this={fileInput} >
-		<button class='button' on:click={()=>{fileInput.click()}} on:keydown={handleKeyPress}>
+		<button class='button' class:non-active="{!greyButtons}" on:click={()=>{fileInput.click()}} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdFileUpload/>
 			</div>
@@ -362,31 +380,31 @@
 			<div class='icon'>
 				<MdVisibilityOff/>
 			</div>
-			<span class='tooltip'>Verberg elementen</span>
+			<span class='tooltip'><p>Verberg elementen</p></span>
 		</button>
 		<button class='button' class:selected="{isolateActive}" class:non-active="{greyButtons}" on:click={toggleIsolate(workstation)} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdFilter1/>
 			</div>
-			<span class='tooltip'>Isoleer een element</span>
+			<span class='tooltip'><p>Isoleer een element</p></span>
 		</button>
 		<button class='button' class:selected="{clipperActive}" class:non-active="{greyButtons}" on:click={toggleClipper} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdCrop/>
 			</div>
-			<span class='tooltip'>Maak doorsnedes</span>
+			<span class='tooltip'><p>Creëer doorsnedes</p></span>
 		</button>
 		<button class='button' class:selected="{transparentActive}" class:non-active="{greyButtons}" on:click={toggleTransparent(workstation)} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdSettingsBrightness/>
 			</div>
-			<span class='tooltip'>Geef vorige werkstations weer</span>
+			<span class='tooltip'><p>Transparante vorige stations</p></span>
 		</button>
 		<button class='button' class:selected="{detailsActive}" class:non-active="{greyButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
 			<div class='icon'>
 				<MdInfo/>
 			</div>
-			<span class='tooltip'>Geef properties weer</span>
+			<span class='tooltip'><p>Details van het element</p></span>
 		</button>
 	</aside>
 	{#if detailsActive}
