@@ -4,20 +4,14 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { Color, MeshLambertMaterial } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
-	import MdVisibilityOff from 'svelte-icons/md/MdVisibilityOff.svelte'
+	import MdSettingsBrightness from 'svelte-icons/md/MdSettingsBrightness.svelte';
+	import MdVisibilityOff from 'svelte-icons/md/MdVisibilityOff.svelte';
 	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
 	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte';
 	import MdCrop from 'svelte-icons/md/MdCrop.svelte';
 	import MdInfo from 'svelte-icons/md/MdInfo.svelte';
 	import MdHome from 'svelte-icons/md/MdHome.svelte';
 
-	// Creates subset material
-	const preselectMat = new MeshLambertMaterial({
-		transparent: true,
-		opacity: 0.6,
-		color: 0xff88ff,
-		depthTest: false,
-	});
 
 	let fileInput;
 	let container;
@@ -27,6 +21,7 @@
 	let hideActive = false;
 	let isolateActive = false;
 	let clipperActive = false;
+	let transparentActive = false;
 	let detailsActive = false;
 	let greyButtons = true;
 
@@ -38,6 +33,13 @@
 	let selectedSubset;
 	let selectedIDs = [];
 	let subsets = {};
+
+	const transparentMat = new MeshLambertMaterial({
+		transparent: true,
+		opacity: 0.2,
+		color: 0xffffff,
+		depthTest: false,
+	});
 
 
 	onMount(async () => {
@@ -64,15 +66,15 @@
 
 		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
 		let JSONdata = await JSONblob[0].text();
-		JSONdata = JSON.parse(JSONdata)
+		JSONdata = JSON.parse(JSONdata);
 		const results = await createWsArray(JSONdata, model);
 		[workstations, wsObject] = results;
 
-		createSubsets(viewer, model, wsObject)
-		replaceModelBySubset(viewer, model, "All")
+		createSubsets(viewer, model, wsObject);
+		replaceModelBySubset(viewer, model, "All");
 
-		propertyData = await getItemProperties(model.modelID)
-		greyButtons = false
+		propertyData = await getItemProperties(model.modelID);
+		greyButtons = false;
 	}
 
 	function handleKeyPress(e) {
@@ -95,12 +97,12 @@
 				propertyData = await getItemProperties(found.id)
 				if (isolateActive) {
 					selectedIDs = [];
-					selectedIDs.push(found.id)
-					isolate(selectedIDs)
+					selectedIDs.push(found.id);
+					isolate(selectedIDs);
 				}
 				if (hideActive) {
-					selectedIDs.push(found.id)
-					hide(selectedIDs)
+					selectedIDs.push(found.id);
+					hide(selectedIDs);
 					viewer.IFC.selector.unpickIfcItems();
 				}
 			} else {
@@ -142,12 +144,18 @@
 	function toggleClipper() {
 	//------------------- Plane Button -------------------
 		clipperActive = !clipperActive;
-		viewer.clipper.active = clipperActive
+		viewer.clipper.active = clipperActive;
 	}
 
 	function toggleDetails() {
 	//------------------- Details Button -------------------
 		detailsActive = !detailsActive;
+	}
+
+	function toggleTransparent(ws) {
+	//------------------- Details Button -------------------
+		transparentActive = !transparentActive;
+		!transparentActive ? showTransparentWS('All') : showTransparentWS(ws);
 	}
 
 	function toggleWorkstation(ws) {
@@ -161,7 +169,10 @@
 				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'hidden');
 			} catch (e) {}
 		}
-		replaceModelBySubset(viewer, activeModel, ws)
+		replaceModelBySubset(viewer, activeModel, ws);
+		if (transparentActive) {
+			showTransparentWS(ws);
+		}
 	}
 
 	async function createWsArray(JSONdata, model) {
@@ -204,15 +215,13 @@
 	//------------------- Creates subsets -------------------
 		const scene = viewer.context.getScene();
 
-		for (const key in objects) {
-			let wsID = 'subset';
-			let id = key.concat(wsID)	//Necessary to function, bug/feature?
+		for (const key in objects) {//Necessary to function, bug/feature?
 			const subset = viewer.IFC.loader.ifcManager.createSubset({
 				modelID: model.modelID,
 				ids: objects[key],
 				scene: scene,
 				removePrevious: true,
-				customID: id,
+				customID: key,
 			});
 			subsets[key] = subset;
 		}
@@ -225,7 +234,6 @@
 
 		for (const key in subsets) {
 			if (key !== id) {
-				viewer.IFC.loader.ifcManager.removeFromSubset(model.modelID, wsObject[key], key)
 				subsets[key].removeFromParent()
 			}
 		}
@@ -276,6 +284,31 @@
 		} else {
 			items.pickableIfcModels = activeModel;
 		}
+	}
+
+	function showTransparentWS(ws) {
+	//------------------- Shows transparent workstations -------------------
+		const scene = viewer.context.getScene()
+		let wsIndex = workstations.indexOf(ws)
+		let wsBefore = workstations.slice(0, wsIndex)
+		let wsBeforeIDs = []
+		if (ws === 'All') {
+			wsBeforeIDs = []
+		} else {
+			for (var i = 0; i < wsBefore.length; i++) {
+				wsBeforeIDs = wsBeforeIDs.concat(wsObject[wsBefore[i]])
+			}
+		}
+
+		let transparentSubset = viewer.IFC.loader.ifcManager.createSubset({
+			modelID: activeModel.modelID,
+			ids: wsBeforeIDs,
+			scene: scene,
+			removePrevious: true,
+			customID: 'transparent',
+			material: transparentMat,
+		});
+		scene.add(transparentSubset)
 	}
 
 	async function getItemProperties(expID) {
@@ -342,6 +375,12 @@
 				<MdCrop/>
 			</div>
 			<span class='tooltip'>Maak doorsnedes</span>
+		</button>
+		<button class='button' class:selected="{transparentActive}" class:non-active="{greyButtons}" on:click={toggleTransparent(workstation)} on:keydown={handleKeyPress}>
+			<div class='icon'>
+				<MdSettingsBrightness/>
+			</div>
+			<span class='tooltip'>Geef vorige werkstations weer</span>
 		</button>
 		<button class='button' class:selected="{detailsActive}" class:non-active="{greyButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
 			<div class='icon'>

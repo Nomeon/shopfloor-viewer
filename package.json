@@ -1,7 +1,7 @@
 {
   "name": "svelte2",
   "version": "1.0.0",
-  "description": "IFC viewer using svelte",
+  "description": "IFC viewer using Svelte",
   "main": "main.js",
   "author": "Stijn Nijhuis",
   "license": "MIT",
@@ -23,7 +23,6 @@
     "svelte-icons": "^2.1.0"
   },
   "dependencies": {
-    "file-saver": "^2.0.5",
     "sirv-cli": "^1.0.0",
     "three-mesh-bvh": "^0.5.23",
     "web-ifc-viewer": "^1.0.209"
