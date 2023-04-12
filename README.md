@@ -13,6 +13,10 @@ Simple IFC viewer with the ability to select the parts which need to be assemble
 
 This app is built using `web-ifc-viewer`, which depends on `web-ifc-three`, `web-ifc`, and `three`.
 
+### Install
+
+Clone this repository and run `npm i`. During development `npm run dev` will serve the web application locally, if available on `http://localhost:5000`. For production, `npm run build` will serve all the files in the `public` folder. These files can then be uploaded to a server, as Svelte compiles to vanilla js.
+
 ### Contents
 
 - `src/App.svelte`: IFC viewer and the logic behind it
