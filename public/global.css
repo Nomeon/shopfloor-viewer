@@ -2,6 +2,7 @@
 
 :root {
 	--darkblue: #152f50;
+	--accent: #4ade80;
 }
 
 html, body {
@@ -17,6 +18,12 @@ body {
 	padding: 0;
 	box-sizing: border-box;
 	font-family: 'Roboto';
+}
+
+#viewer-container {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
 }
 
 button {
@@ -104,24 +111,6 @@ button {
 	cursor: pointer;
 }
 
-.tooltip {
-	position: absolute;
-	margin-left: 4rem;
-	padding: 1rem 2rem;
-	background-color: var(--darkblue);
-	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-	font-weight: 600;
-	text-align: center;
-	white-space: nowrap;
-	border-radius: 15px;
-	color: white;
-	visibility: hidden;
-	opacity: 0;
-	transition: all 200ms ease-in-out;
-	-moz-transition: all 200ms ease-in-out;
-    -webkit-transition: all 200ms ease-in-out;
-}
-
 input {
 	display: none;
 }
@@ -138,11 +127,7 @@ input:checked + .ws {
 	color: white;
 }
 
-.hidden {
-    visibility: collapse;
-}
-
-/* App */
+/* Toolbar */
 
 .toolbar {
 	display: flex;
@@ -155,31 +140,37 @@ input:checked + .ws {
 	left: 2rem;
 }
 
-.side-menu-right {
-	background-color: rgba(226, 232, 240, 0.1);
-	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(5px);
-	z-index: 1;
-	position: fixed;
-	top: 50%;
-	left: 100%;
-	transform: translate(calc(-50% - 18vh), calc(-50%));
-	height: auto;
-	width: 36vh;
+.tooltip {
 	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	border-bottom-left-radius: 15px;
-	border-top-left-radius: 15px;
-	pointer-events: none;
+	align-items: center;
+	position: absolute;
+	height: 2rem;
+	margin-left: 4rem;
+	padding: 0.7rem 2rem;
+	background-color: var(--darkblue);
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+	font-weight: 600;
+	text-align: center;
+	white-space: nowrap;
+	border-radius: 15px;
+	color: white;
+	visibility: hidden;
+	opacity: 0;
+	transition: all 200ms ease-in-out;
+	-moz-transition: all 200ms ease-in-out;
+    -webkit-transition: all 200ms ease-in-out;
 }
 
-.right-menu-item {
-	flex: 1;
-	padding: 1rem;
-	color: var(--darkblue);
-	overflow: hidden;
+.tooltip > p {
+	display: block;
 }
+
+.tooltip > p::first-letter {
+	color: var(--accent);
+	font-weight: 900;
+}
+
+/* WSbar */
 
 .wsbar {
 	display: flex;
@@ -194,13 +185,33 @@ input:checked + .ws {
 	transform: translate(calc(-50%), 0);
 }
 
-#viewer-container {
+/* Property View */
+
+.side-menu-right {
+	background-color: rgba(226, 232, 240, 0.1);
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+	backdrop-filter: blur(5px);
+	z-index: 1;
 	position: fixed;
-	width: 100vw;
-	height: 100vh;
+	top: 50%;
+	left: 100%;
+	transform: translate(calc(-50% - 15rem), calc(-50%));
+	height: auto;
+	width: 30rem;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border-bottom-left-radius: 15px;
+	border-top-left-radius: 15px;
+	pointer-events: none;
 }
 
-/* Property View */
+.right-menu-item {
+	flex: 1;
+	padding: 2rem;
+	color: var(--darkblue);
+	overflow: hidden;
+}
 
 h4 {
 	margin-bottom: 0px;
@@ -222,14 +233,6 @@ table {
 th, td {
 	border: none;
 	text-align: left;
-}
-
-#col1 {
-	width: 140px;
-}
-
-#col2 {
-	width: 184px;
 }
 
 hr {
