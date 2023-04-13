@@ -29,8 +29,8 @@
 	let workstations;
 	let workstation = 'All';
 
-	let selectedSubset;
 	let selectedIDs = [];
+	let selectedSubset;
 	let subsets = {};
 
 	const transparentMat = new MeshLambertMaterial({
@@ -80,9 +80,7 @@
 	//------------------- Handles key presses -------------------
 		switch (e.code) {
 			case 'Escape':
-				if (viewer.clipper.active) {
-					viewer.clipper.deleteAllPlanes();
-				}
+				viewer.clipper.active && viewer.clipper.deleteAllPlanes();
 				break;
 			case 'KeyV':
 				toggleHide(workstation);
@@ -114,8 +112,7 @@
 			if (found) {
 				propertyData = await getItemProperties(found.id);
 				if (isolateActive) {
-					selectedIDs = [];
-					selectedIDs.push(found.id);
+					selectedIDs = [found.id];
 					isolate(selectedIDs);
 				}
 				if (hideActive) {
@@ -140,7 +137,7 @@
 			}
 		}
 		else {
-			if (isolateActive) toggleIsolate(ws);
+			isolateActive && toggleIsolate(ws);
 		};
 	}
 
@@ -155,7 +152,7 @@
 			}
 		}
 		else {
-			if (hideActive) toggleHide(ws);
+			hideActive && toggleHide(ws);
 		};
 	}
 
@@ -171,7 +168,7 @@
 	}
 
 	function toggleTransparent(ws) {
-	//------------------- Details Button -------------------
+	//------------------- Transparency Button -------------------
 		transparentActive = !transparentActive;
 		!transparentActive ? showTransparentWS('All') : showTransparentWS(ws);
 	}
@@ -186,11 +183,9 @@
 			try {
 				viewer.IFC.loader.ifcManager.clearSubset(activeModel.modelID, 'hidden');
 			} catch (e) {}
-		}
-		replaceModelBySubset(viewer, activeModel, ws);
-		if (transparentActive) {
-			showTransparentWS(ws);
 		};
+		replaceModelBySubset(viewer, activeModel, ws);
+		transparentActive && showTransparentWS(ws);
 	}
 
 	async function createWsArray(JSONdata, model) {
@@ -215,14 +210,8 @@
 			for (var Sprops in propSet['HasProperties']) {
 				if (JSONdata[propSet['HasProperties'][Sprops]]['Name'] === 'Station') {
 					let propSetValue = JSONdata[propSet['HasProperties'][Sprops]]['NominalValue'];
-					if (objectWS.hasOwnProperty(propSetValue)) {
-						objectWS[propSetValue].push(parseInt(obj));
-					} else {
-						objectWS[propSetValue] = [parseInt(obj)];
-					};
-					if (!workStations.includes(propSetValue)) {
-						workStations.push(propSetValue);
-					};
+					objectWS.hasOwnProperty(propSetValue) ?	objectWS[propSetValue].push(parseInt(obj)) : objectWS[propSetValue] = [parseInt(obj)];
+					!workStations.includes(propSetValue) &&	workStations.push(propSetValue);
 				};
 			};
 		};
@@ -233,7 +222,7 @@
 	//------------------- Creates subsets -------------------
 		const scene = viewer.context.getScene();
 
-		for (const key in objects) {//Necessary to function, bug/feature?
+		for (const key in objects) {
 			const subset = viewer.IFC.loader.ifcManager.createSubset({
 				modelID: model.modelID,
 				ids: objects[key],
@@ -251,20 +240,18 @@
 		const subset = subsets[id];
 
 		for (const key in subsets) {
-			if (key !== id) {
-				subsets[key].removeFromParent()
-			}
+			key !== id && subsets[key].removeFromParent();
 		}
 		model.removeFromParent();
-		items.ifcModels = [];
-		items.ifcModels.push(subset);
+		items.ifcModels = [subset];
+
 		activeModel = items.ifcModels[0];
 		togglePickable(subset, true);
 		viewer.context.scene.add(subset);
 	}
 
 	function hide(ids){
-	//------------------- Handles the hide event -------------------
+	//------------------- Hides the selected element(s) -------------------
 		let currentIds = wsObject[workstation];
 		let newIds = currentIds.filter(x => !ids.includes(x));
 		const scene = viewer.context.getScene();
@@ -296,12 +283,7 @@
 	function togglePickable(subset, pickable) {
 	//------------------- Toggles pickable state of subset -------------------
 		const items = viewer.context.items;
-		if (pickable) {
-			items.pickableIfcModels = [];
-			items.pickableIfcModels.push(subset);
-		} else {
-			items.pickableIfcModels = activeModel;
-		};
+		pickable ? items.pickableIfcModels = [subset] : items.pickableIfcModels = activeModel;
 	}
 
 	function showTransparentWS(ws) {
@@ -310,9 +292,7 @@
 		let wsIndex = workstations.indexOf(ws);
 		let wsBefore = workstations.slice(0, wsIndex);
 		let wsBeforeIDs = [];
-		if (ws === 'All') {
-			wsBeforeIDs = [];
-		} else {
+		if (ws !== 'All') {
 			for (var i = 0; i < wsBefore.length; i++) {
 				wsBeforeIDs = wsBeforeIDs.concat(wsObject[wsBefore[i]]);
 			};
@@ -331,8 +311,7 @@
 
 	async function getItemProperties(expID) {
 	//------------------- Gets prop data of ID -------------------
-		let modID = activeModel.modelID;
-		const props = await viewer.IFC.getProperties(modID, expID, true);
+		const props = await viewer.IFC.getProperties(activeModel.modelID, expID, true);
 		const data = await getPropertyGroups(props);
 		return data;
 	}
@@ -340,8 +319,7 @@
 	async function getPropertyGroups(values) {
 	//------------------- Gets S parameters of item -------------------
 		const props = await values;
-		let modID = activeModel.modelID;
-		const properties = await viewer.IFC.getProperties(modID, props.expressID, true, true);
+		const properties = await viewer.IFC.getProperties(activeModel.modelID, props.expressID, true, true);
 		
 		if (props.psets.length === 0) {
 			return {name: getProp(props.LongName), description: props.constructor.name, props: [{ name: 'Name', value: getProp(props.LongName)}, { name: 'GlobalID', value: getProp(props.GlobalId)}]};
