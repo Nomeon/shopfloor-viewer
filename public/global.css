@@ -20,6 +20,20 @@ body {
 	font-family: 'Roboto';
 }
 
+.topbar {
+	display: flex;
+	gap: 1rem;
+	position: fixed;
+	left: 50%;
+	transform: translate(-50%, 0);
+	z-index: 2;
+	padding: 2rem;
+}
+
+.topbar > img {
+	height: 32px;
+}
+
 #viewer-container {
 	position: fixed;
 	width: 100vw;

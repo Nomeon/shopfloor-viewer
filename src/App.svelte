@@ -1,3 +1,5 @@
+<!-- Add measurement tool -->
+
 <script>
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
@@ -22,6 +24,7 @@
 	let clipperActive = false;
 	let transparentActive = false;
 	let detailsActive = false;
+	let measuresActive = false;
 	let greyButtons = true;
 
 	let wsObject;
@@ -81,6 +84,11 @@
 		switch (e.code) {
 			case 'Escape':
 				viewer.clipper.active && viewer.clipper.deleteAllPlanes();
+				if (measuresActive) {
+					measuresActive = !measuresActive;
+					viewer.dimensions.previewActive = measuresActive;
+					viewer.dimensions.deleteAll();
+				}
 				break;
 			case 'KeyV':
 				toggleHide(workstation);
@@ -98,6 +106,14 @@
 				toggleClipper();
 				break;
 		};
+	}
+
+	function handleDoubleClick() {
+		if (viewer.clipper.active) {
+			viewer.clipper.createPlane();
+		}	else if (measuresActive) {
+			viewer.dimensions.create();
+		}
 	}
 
 	async function prePickItem() {
@@ -171,6 +187,19 @@
 	//------------------- Transparency Button -------------------
 		transparentActive = !transparentActive;
 		!transparentActive ? showTransparentWS('All') : showTransparentWS(ws);
+	}
+
+	function toggleDimensions() {
+	//------------------- Dimensions Button -------------------
+		if(measuresActive) {
+			measuresActive = !measuresActive;
+			viewer.dimensions.deleteAll();
+			viewer.dimensions.previewActive = measuresActive;
+		} else {
+			measuresActive = !measuresActive;
+			viewer.dimensions.active = measuresActive;
+			viewer.dimensions.previewActive = measuresActive;
+		};
 	}
 
 	function toggleWorkstation(ws) {
@@ -311,7 +340,7 @@
 
 	async function getItemProperties(expID) {
 	//------------------- Gets prop data of ID -------------------
-		const props = await viewer.IFC.getProperties(activeModel.modelID, expID, true);
+		const props = await viewer.IFC.getProperties(0, expID, true);
 		const data = await getPropertyGroups(props);
 		return data;
 	}
@@ -320,17 +349,17 @@
 	//------------------- Gets S parameters of item -------------------
 		const props = await values;
 		const properties = await viewer.IFC.getProperties(activeModel.modelID, props.expressID, true, true);
-		
+
 		if (props.psets.length === 0) {
 			return {name: getProp(props.LongName), description: props.constructor.name, props: [{ name: 'Name', value: getProp(props.LongName)}, { name: 'GlobalID', value: getProp(props.GlobalId)}]};
 		} else {
-		const propObj = await properties['psets'][0]['HasProperties'].map((p) => {
-			return { name: getProp(p.Name), value: getProp(p.NominalValue) };
-		});
-		try {
-			propObj.splice(16, 1);
-			propObj.splice(9, 6);
-		} catch(e) {}
+			const propObj = await properties['psets'][0]['HasProperties'].map((p) => {
+				return { name: getProp(p.Name), value: getProp(p.NominalValue) };
+			});
+			try {
+				propObj.splice(16, 1);
+				propObj.splice(9, 6);
+			} catch(e) {}
 			return {name: props.Name.value, description: props.constructor.name, props: propObj};
 		};
 	}
@@ -384,6 +413,12 @@
 			</div>
 			<span class='tooltip'><p>Details van het element</p></span>
 		</button>
+		<button class='button' class:selected="{measuresActive}" class:non-active="{greyButtons}" on:click={toggleDimensions} on:keydown={handleKeyPress}>
+			<div class='icon'>
+				<MdInfo/>
+			</div>
+			<span class='tooltip'><p>Measures van het element</p></span>
+		</button>
 	</aside>
 	{#if detailsActive}
 	<div class="side-menu-right" transition:fly="{{ x: '100%', easing: cubicInOut}}">
@@ -433,7 +468,7 @@
 		on:click={pickItem}
 		on:keydown={handleKeyPress}
 		on:mousemove={prePickItem}
-		on:dblclick={() => {if (viewer.clipper.active) {viewer.clipper.createPlane()}}}>
+		on:dblclick={handleDoubleClick}>
 	</div>
 </main>
 <svelte:window on:keydown|preventDefault={handleKeyPress}/>
