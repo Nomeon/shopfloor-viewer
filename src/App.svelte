@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 	import { Color, MeshLambertMaterial } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
@@ -475,7 +475,9 @@
 		</div>
 	{/if}
 	{#if helpActive}
-		<Help/>
+		<div class='help-menu' transition:fade>
+			<Help/>
+		</div>
 	{/if}
 </main>
 <svelte:window on:keydown|preventDefault={handleKeyPress}/>
