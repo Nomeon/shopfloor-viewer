@@ -34,8 +34,7 @@ Clone this repository and run `npm i`. During development `npm run dev` will ser
 - [x] Showing transparent elements of previous workstations
 - [x] Custom Property menu: only gives select, necessary information from a custom pset
 - [x] Measurement with snap functionality
-
-- [ ] Help menu overlay
+- [x] Help menu overlay
 - [ ] Ability to select path for custom properties?
 - [ ] Adding mapbox integration?
 
