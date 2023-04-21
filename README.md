@@ -15,11 +15,13 @@ This app is built using `web-ifc-viewer`, which depends on `web-ifc-three`, `web
 
 ### Install
 
-Clone this repository and run `npm i`. During development `npm run dev` will serve the web application locally, if available on `http://localhost:5000`. For production, `npm run build` will serve all the files in the `public` folder. These files can then be uploaded to a server, as Svelte compiles to vanilla js.
+Clone this repository and run `npm i`. During development `npm run dev` will serve the web application locally. For production, `npm run build` will serve all the files in the `public` folder. These files can then be uploaded to a server, as Svelte compiles to vanilla js.
 
 ### Contents
 
 - `src/App.svelte`: IFC viewer and the logic behind it
+- `src/Icon.svelte`: Component to serve icons dynamically
+- `src/Help.svelte`: Component which creates the 'help' overlay [IN PROGRESS]
 - `public/global.css`: Styling of the viewer
 
 ### Functionalities and future implementations
@@ -31,21 +33,17 @@ Clone this repository and run `npm i`. During development `npm run dev` will ser
 - [x] 3D clipping planes
 - [x] Showing transparent elements of previous workstations
 - [x] Custom Property menu: only gives select, necessary information from a custom pset
+- [x] Measurement with snap functionality
 
-- [ ] Considering adding a Tree view
-- [ ] Ability to select path for custom properties
-- [ ] Adding mapbox integration
-- [ ] Changing styling
+- [ ] Help menu overlay
+- [ ] Ability to select path for custom properties?
+- [ ] Adding mapbox integration?
+
 
 ## Authors
 
 Stijn Nijhuis
 [@Nomeon](https://www.linkedin.com/in/stijn-nijhuis-56593524a/)
-
-## Version History
-
-- 0.1
-  - Initial Release
 
 ## Acknowledgments
 
