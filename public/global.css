@@ -1,7 +1,8 @@
 /* Global */
 
 :root {
-	--darkblue: #152f50;
+	--darkblue: rgb(21, 47, 80);
+	--darkblue-transparent: rgba(21, 47, 80, 0.8);
 	--accent: #4ade80;
 }
 
@@ -72,7 +73,7 @@ button {
 }
 
 .button:hover > .icon {
-	color: white;
+	fill: white;
 }
 
 .button:hover .tooltip {
@@ -86,7 +87,7 @@ button {
 .button > .ws {
 	cursor: pointer;
 	color: var(--darkblue);
-	height: 2rem;
+	height: 1.5rem;
 	width: 3rem;
 	display: flex;
 	align-items: center;
@@ -103,7 +104,7 @@ button {
 }
 
 .selected > .icon {
-	color: white;
+	fill: white;
 }
 
 .non-active {
@@ -119,9 +120,9 @@ button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 2rem;
-	width: 2rem;
-	color: var(--darkblue);
+	height: 1.5rem;
+	width: 1.5rem;
+	fill: var(--darkblue);
 	cursor: pointer;
 }
 
@@ -134,7 +135,7 @@ input {
 }
 
 input:checked + .icon {
-	color: white;
+	fill: white;
 }
 
 input:checked + .ws {
@@ -158,7 +159,7 @@ input:checked + .ws {
 	display: flex;
 	align-items: center;
 	position: absolute;
-	height: 2rem;
+	height: 1.5rem;
 	margin-left: 4rem;
 	padding: 0.7rem 2rem;
 	background-color: var(--darkblue);
@@ -254,4 +255,22 @@ hr {
 	border-color: var(--darkblue);
 	border-style: solid;
 	border-width: 1px;
+}
+
+.ifcjs-dimension-label {
+	font-weight: 400;
+	color: white;
+	height: auto;
+	width: auto;
+	padding: 0.2rem 0.5rem;
+	border-radius: 5px;
+	background-color: var(--darkblue);
+}
+
+.ifcjs-dimension-preview {
+	width: 1rem;
+	height: 1rem;
+	background-color: var(--accent);
+	border-radius: 1rem;
+	opacity: 0.7;
 }

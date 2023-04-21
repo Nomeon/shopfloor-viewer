@@ -1,31 +1,26 @@
-<!-- Add measurement tool -->
-
 <script>
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 	import { Color, MeshLambertMaterial } from "three";
 	import { IfcViewerAPI } from "web-ifc-viewer";
-	import MdSettingsBrightness from 'svelte-icons/md/MdSettingsBrightness.svelte';
-	import MdVisibilityOff from 'svelte-icons/md/MdVisibilityOff.svelte';
-	import MdFileUpload from 'svelte-icons/md/MdFileUpload.svelte';
-	import MdFilter1 from 'svelte-icons/md/MdFilter1.svelte';
-	import MdCrop from 'svelte-icons/md/MdCrop.svelte';
-	import MdInfo from 'svelte-icons/md/MdInfo.svelte';
-	import MdHome from 'svelte-icons/md/MdHome.svelte';
+	import Icon from './Icon.svelte';
+	import Help from './Help.svelte';
 
 	let fileInput;
 	let container;
 	let viewer;
 	let propertyData;
 
+	let helpActive;
+	let selectionActive = true;
 	let hideActive = false;
 	let isolateActive = false;
 	let clipperActive = false;
 	let transparentActive = false;
 	let detailsActive = false;
 	let measuresActive = false;
-	let greyButtons = true;
+	let disabledButtons = true;
 
 	let wsObject;
 	let activeModel;
@@ -76,7 +71,7 @@
 		replaceModelBySubset(viewer, model, "All");
 
 		propertyData = await getItemProperties(model.modelID);
-		greyButtons = false;
+		disabledButtons = false;
 	}
 
 	function handleKeyPress(e) {
@@ -105,6 +100,12 @@
 			case 'KeyC':
 				toggleClipper();
 				break;
+			case 'KeyM':
+				toggleDimensions();
+				break;
+			case 'KeyH':
+				toggleHelp();
+				break;
 		};
 	}
 
@@ -118,12 +119,15 @@
 
 	async function prePickItem() {
 	//------------------- Pre-picks item -------------------
-		await viewer.IFC.selector.prePickIfcItem();
+		if (selectionActive) {
+			await viewer.IFC.selector.prePickIfcItem();
+		}
+
 	}
 
 	async function pickItem() {
 	//------------------- Handles item picking -------------------
-		if (viewer) {
+		if (viewer && selectionActive) {
 			const found = await viewer.IFC.selector.pickIfcItem();
 			if (found) {
 				propertyData = await getItemProperties(found.id);
@@ -186,7 +190,7 @@
 	function toggleTransparent(ws) {
 	//------------------- Transparency Button -------------------
 		transparentActive = !transparentActive;
-		!transparentActive ? showTransparentWS('All') : showTransparentWS(ws);
+		transparentActive ? showTransparentWS(ws) : showTransparentWS('All');
 	}
 
 	function toggleDimensions() {
@@ -195,10 +199,14 @@
 			measuresActive = !measuresActive;
 			viewer.dimensions.deleteAll();
 			viewer.dimensions.previewActive = measuresActive;
+			selectionActive = !measuresActive;
 		} else {
 			measuresActive = !measuresActive;
 			viewer.dimensions.active = measuresActive;
 			viewer.dimensions.previewActive = measuresActive;
+			viewer.IFC.selector.unPrepickIfcItems();
+			viewer.IFC.selector.unpickIfcItems();
+			selectionActive = !measuresActive;
 		};
 	}
 
@@ -215,6 +223,14 @@
 		};
 		replaceModelBySubset(viewer, activeModel, ws);
 		transparentActive && showTransparentWS(ws);
+		isolateActive = false;
+		hideActive = false;
+	}
+
+	function toggleHelp() {
+	//------------------- Help Button -------------------
+		helpActive = !helpActive;
+		console.log('help')
 	}
 
 	async function createWsArray(JSONdata, model) {
@@ -375,49 +391,46 @@
 </script>
 
 <main>
+	<div id="viewer-container"
+		bind:this={container}
+		on:click={pickItem}
+		on:keydown={handleKeyPress}
+		on:mousemove={prePickItem}
+		on:dblclick={handleDoubleClick}>
+	</div>
 	<aside class="toolbar">
 		<input style="display:none" type="file" accept=".ifc" on:change={(e)=>loadIfc(e)} bind:this={fileInput} >
-		<button class='button' class:non-active="{!greyButtons}" on:click={()=>{fileInput.click()}} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdFileUpload/>
-			</div>
+		<button class='button' class:non-active="{!disabledButtons}" on:click={()=>{fileInput.click()}} on:keydown={handleKeyPress}>
+			<Icon name='upload' class='icon'/>
 			<span class='tooltip'>Upload een IFC bestand</span>
 		</button>
-		<button class='button' class:selected="{hideActive}" class:non-active="{greyButtons}" on:click={toggleHide(workstation)} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdVisibilityOff/>
-			</div>
+		<button class='button' class:selected="{hideActive}" class:non-active="{disabledButtons}" on:click={toggleHide(workstation)} on:keydown={handleKeyPress}>
+			<Icon name='hide' class='icon'/>
 			<span class='tooltip'><p>Verberg elementen</p></span>
 		</button>
-		<button class='button' class:selected="{isolateActive}" class:non-active="{greyButtons}" on:click={toggleIsolate(workstation)} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdFilter1/>
-			</div>
+		<button class='button' class:selected="{isolateActive}" class:non-active="{disabledButtons}" on:click={toggleIsolate(workstation)} on:keydown={handleKeyPress}>
+			<Icon name='isolate' class='icon'/>
 			<span class='tooltip'><p>Isoleer een element</p></span>
 		</button>
-		<button class='button' class:selected="{clipperActive}" class:non-active="{greyButtons}" on:click={toggleClipper} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdCrop/>
-			</div>
+		<button class='button' class:selected="{clipperActive}" class:non-active="{disabledButtons}" on:click={toggleClipper} on:keydown={handleKeyPress}>
+			<Icon name='section' class='icon'/>
 			<span class='tooltip'><p>Creëer doorsnedes</p></span>
 		</button>
-		<button class='button' class:selected="{transparentActive}" class:non-active="{greyButtons}" on:click={toggleTransparent(workstation)} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdSettingsBrightness/>
-			</div>
+		<button class='button' class:selected="{measuresActive}" class:non-active="{disabledButtons}" on:click={toggleDimensions} on:keydown={handleKeyPress}>
+			<Icon name='measure' class='icon'/>
+			<span class='tooltip'><p>Meten van elementen</p></span>
+		</button>
+		<button class='button' class:selected="{transparentActive}" class:non-active="{disabledButtons}" on:click={toggleTransparent(workstation)} on:keydown={handleKeyPress}>
+			<Icon name='transparent' class='icon'/>
 			<span class='tooltip'><p>Transparante vorige stations</p></span>
 		</button>
-		<button class='button' class:selected="{detailsActive}" class:non-active="{greyButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdInfo/>
-			</div>
+		<button class='button' class:selected="{detailsActive}" class:non-active="{disabledButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
+			<Icon name='details' class='icon'/>
 			<span class='tooltip'><p>Details van het element</p></span>
 		</button>
-		<button class='button' class:selected="{measuresActive}" class:non-active="{greyButtons}" on:click={toggleDimensions} on:keydown={handleKeyPress}>
-			<div class='icon'>
-				<MdInfo/>
-			</div>
-			<span class='tooltip'><p>Measures van het element</p></span>
+		<button class='button' class:selected="{helpActive}" on:click={toggleHelp} on:keydown={handleKeyPress}>
+			<Icon name='help' class='icon'/>
+			<span class='tooltip'><p>Hulp voor de viewer</p></span>
 		</button>
 	</aside>
 	{#if detailsActive}
@@ -430,8 +443,8 @@
 				<table>
 					<thead>
 						<tr>
-							<th id='col1'>Property</th>
-							<th id='col2'>Value</th>
+							<th id='col1'>Eigenschap</th>
+							<th id='col2'>Waarde</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -451,9 +464,7 @@
 		<div class='wsbar' in:fly="{{ y: '100%', easing: cubicInOut}}">
 			<label class='button'>
 				<input type='radio' bind:group={workstation} value={'All'} on:click={() => toggleWorkstation('All')} on:keydown={handleKeyPress}>
-				<div class='all icon'>
-					<MdHome/>
-				</div>
+				<Icon name='all' class='all icon'/>
 			</label>
 			{#each workstations as ws}
 				<label class='button'>
@@ -463,12 +474,8 @@
 			{/each}
 		</div>
 	{/if}
-	<div id="viewer-container"
-		bind:this={container}
-		on:click={pickItem}
-		on:keydown={handleKeyPress}
-		on:mousemove={prePickItem}
-		on:dblclick={handleDoubleClick}>
-	</div>
+	{#if helpActive}
+		<Help/>
+	{/if}
 </main>
 <svelte:window on:keydown|preventDefault={handleKeyPress}/>
