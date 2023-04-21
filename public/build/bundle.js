@@ -914,6 +914,15 @@ var app = (function () {
         return f * f * f + 1.0;
     }
 
+    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
     function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 } = {}) {
         const style = getComputedStyle(node);
         const target_opacity = +style.opacity;
@@ -123007,25 +123016,352 @@ var app = (function () {
     const file$1 = "src\\Help.svelte";
 
     function create_fragment$1(ctx) {
-    	let div;
+    	let div18;
+    	let div0;
+    	let h1;
+    	let t1;
+    	let h4;
+    	let t2;
+    	let span0;
+    	let t4;
+    	let t5;
+    	let div17;
+    	let div2;
+    	let icon0;
+    	let t6;
+    	let div1;
+    	let t8;
+    	let div4;
+    	let icon1;
+    	let t9;
+    	let div3;
+    	let t10;
+    	let span1;
+    	let t12;
+    	let t13;
+    	let div6;
+    	let icon2;
+    	let t14;
+    	let div5;
+    	let t15;
+    	let span2;
+    	let t17;
+    	let t18;
+    	let div8;
+    	let icon3;
+    	let t19;
+    	let div7;
+    	let t20;
+    	let span3;
+    	let t22;
+    	let t23;
+    	let div10;
+    	let icon4;
+    	let t24;
+    	let div9;
+    	let t25;
+    	let span4;
+    	let t27;
+    	let t28;
+    	let div12;
+    	let icon5;
+    	let t29;
+    	let div11;
+    	let t30;
+    	let span5;
+    	let t32;
+    	let t33;
+    	let div14;
+    	let icon6;
+    	let t34;
+    	let div13;
+    	let t35;
+    	let span6;
+    	let t37;
+    	let t38;
+    	let div16;
+    	let icon7;
+    	let t39;
+    	let div15;
+    	let current;
+
+    	icon0 = new Icon({
+    			props: { name: "upload", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon1 = new Icon({
+    			props: { name: "hide", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon2 = new Icon({
+    			props: { name: "isolate", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon3 = new Icon({
+    			props: { name: "section", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon4 = new Icon({
+    			props: { name: "measure", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon5 = new Icon({
+    			props: {
+    				name: "transparent",
+    				class: "icon help-icon"
+    			},
+    			$$inline: true
+    		});
+
+    	icon6 = new Icon({
+    			props: { name: "details", class: "icon help-icon" },
+    			$$inline: true
+    		});
+
+    	icon7 = new Icon({
+    			props: { name: "all", class: "icon help-icon" },
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			attr_dev(div, "class", "help-container");
-    			add_location(div, file$1, 4, 0, 62);
+    			div18 = element("div");
+    			div0 = element("div");
+    			h1 = element("h1");
+    			h1.textContent = "Hoe werkt de IFC-viewer?";
+    			t1 = space();
+    			h4 = element("h4");
+    			t2 = text("Klik op de knop met de gewenste functionaliteit om deze te activeren. Hiervoor kan ook het toetsenbord gebruikt worden; de eerste letter (in het ");
+    			span0 = element("span");
+    			span0.textContent = "groen";
+    			t4 = text(") geeft aan welke toets daarvoor nodig is. Klik daarna op een element om de bewerking toe te passen. Wisselen van werkstation en deactiveren van de knop reset de bewerkingen.");
+    			t5 = space();
+    			div17 = element("div");
+    			div2 = element("div");
+    			create_component(icon0.$$.fragment);
+    			t6 = space();
+    			div1 = element("div");
+    			div1.textContent = "Met de upload knop kan een IFC ingeladen worden. Deze wordt uitgeschakeld nadat er een is ingelaten. Mocht er een nieuwe IFC nodig zijn, hoeft alleen de pagina ververst te worden.";
+    			t8 = space();
+    			div4 = element("div");
+    			create_component(icon1.$$.fragment);
+    			t9 = space();
+    			div3 = element("div");
+    			t10 = text("De ");
+    			span1 = element("span");
+    			span1.textContent = "V";
+    			t12 = text("erberg knop kan een of meer elementen verbergen, zodat de onderliggende elementen zichtbaar worden.");
+    			t13 = space();
+    			div6 = element("div");
+    			create_component(icon2.$$.fragment);
+    			t14 = space();
+    			div5 = element("div");
+    			t15 = text("De ");
+    			span2 = element("span");
+    			span2.textContent = "I";
+    			t17 = text("soleer knop verbergt alle elementen, behalve het geselecteerde element.");
+    			t18 = space();
+    			div8 = element("div");
+    			create_component(icon3.$$.fragment);
+    			t19 = space();
+    			div7 = element("div");
+    			t20 = text("Om ");
+    			span3 = element("span");
+    			span3.textContent = "D";
+    			t22 = text("oorsnedes te maken, activeer deze knop, en dubbelklik op een element. Doorsnedes kunnen tijdelijk worden uitgezet door de knop te deactiveren, en verwijderd worden met Escape.");
+    			t23 = space();
+    			div10 = element("div");
+    			create_component(icon4.$$.fragment);
+    			t24 = space();
+    			div9 = element("div");
+    			t25 = text("De ");
+    			span4 = element("span");
+    			span4.textContent = "M";
+    			t27 = text("eet tool berekent de afstand tussen 2 punten. Dubbelklik op het begin en het eindpunt, en het label geeft de afstand in meters weer. Labels kunnen tijdelijk worden uitgezet door de knop te deactiveren, en verwijderd worden met Escape.");
+    			t28 = space();
+    			div12 = element("div");
+    			create_component(icon5.$$.fragment);
+    			t29 = space();
+    			div11 = element("div");
+    			t30 = text("Met de ");
+    			span5 = element("span");
+    			span5.textContent = "T";
+    			t32 = text("ransparante lagen knop, worden de elementen die zijn toegevoegd in de vorige werkstations weergegeven.");
+    			t33 = space();
+    			div14 = element("div");
+    			create_component(icon6.$$.fragment);
+    			t34 = space();
+    			div13 = element("div");
+    			t35 = text("De ");
+    			span6 = element("span");
+    			span6.textContent = "D";
+    			t37 = text("etails knop geeft de eigenschappen (properties) van het geselecteerde element weer.");
+    			t38 = space();
+    			div16 = element("div");
+    			create_component(icon7.$$.fragment);
+    			t39 = space();
+    			div15 = element("div");
+    			div15.textContent = "De knoppen onderin geven de elementen per werkstation weer. Let op: het wisselen van de werkstations reset wel de knoppen.";
+    			add_location(h1, file$1, 6, 8, 132);
+    			add_location(span0, file$1, 7, 157, 324);
+    			add_location(h4, file$1, 7, 8, 175);
+    			attr_dev(div0, "class", "help-heading");
+    			add_location(div0, file$1, 5, 4, 96);
+    			attr_dev(div1, "class", "button-explanation");
+    			add_location(div1, file$1, 12, 12, 667);
+    			attr_dev(div2, "class", "help-row");
+    			add_location(div2, file$1, 10, 8, 573);
+    			add_location(span1, file$1, 16, 47, 1037);
+    			attr_dev(div3, "class", "button-explanation");
+    			add_location(div3, file$1, 16, 12, 1002);
+    			attr_dev(div4, "class", "help-row");
+    			add_location(div4, file$1, 14, 8, 910);
+    			add_location(span2, file$1, 20, 47, 1312);
+    			attr_dev(div5, "class", "button-explanation");
+    			add_location(div5, file$1, 20, 12, 1277);
+    			attr_dev(div6, "class", "help-row");
+    			add_location(div6, file$1, 18, 8, 1182);
+    			add_location(span3, file$1, 24, 47, 1559);
+    			attr_dev(div7, "class", "button-explanation");
+    			add_location(div7, file$1, 24, 12, 1524);
+    			attr_dev(div8, "class", "help-row");
+    			add_location(div8, file$1, 22, 8, 1429);
+    			add_location(span4, file$1, 28, 47, 1910);
+    			attr_dev(div9, "class", "button-explanation");
+    			add_location(div9, file$1, 28, 12, 1875);
+    			attr_dev(div10, "class", "help-row");
+    			add_location(div10, file$1, 26, 8, 1780);
+    			add_location(span5, file$1, 32, 51, 2328);
+    			attr_dev(div11, "class", "button-explanation");
+    			add_location(div11, file$1, 32, 12, 2289);
+    			attr_dev(div12, "class", "help-row");
+    			add_location(div12, file$1, 30, 8, 2190);
+    			add_location(span6, file$1, 36, 47, 2606);
+    			attr_dev(div13, "class", "button-explanation");
+    			add_location(div13, file$1, 36, 12, 2571);
+    			attr_dev(div14, "class", "help-row");
+    			add_location(div14, file$1, 34, 8, 2476);
+    			attr_dev(div15, "class", "button-explanation");
+    			add_location(div15, file$1, 40, 12, 2826);
+    			attr_dev(div16, "class", "help-row");
+    			add_location(div16, file$1, 38, 8, 2735);
+    			attr_dev(div17, "class", "help-table");
+    			add_location(div17, file$1, 9, 4, 539);
+    			attr_dev(div18, "class", "help-container");
+    			add_location(div18, file$1, 4, 0, 62);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
+    			insert_dev(target, div18, anchor);
+    			append_dev(div18, div0);
+    			append_dev(div0, h1);
+    			append_dev(div0, t1);
+    			append_dev(div0, h4);
+    			append_dev(h4, t2);
+    			append_dev(h4, span0);
+    			append_dev(h4, t4);
+    			append_dev(div18, t5);
+    			append_dev(div18, div17);
+    			append_dev(div17, div2);
+    			mount_component(icon0, div2, null);
+    			append_dev(div2, t6);
+    			append_dev(div2, div1);
+    			append_dev(div17, t8);
+    			append_dev(div17, div4);
+    			mount_component(icon1, div4, null);
+    			append_dev(div4, t9);
+    			append_dev(div4, div3);
+    			append_dev(div3, t10);
+    			append_dev(div3, span1);
+    			append_dev(div3, t12);
+    			append_dev(div17, t13);
+    			append_dev(div17, div6);
+    			mount_component(icon2, div6, null);
+    			append_dev(div6, t14);
+    			append_dev(div6, div5);
+    			append_dev(div5, t15);
+    			append_dev(div5, span2);
+    			append_dev(div5, t17);
+    			append_dev(div17, t18);
+    			append_dev(div17, div8);
+    			mount_component(icon3, div8, null);
+    			append_dev(div8, t19);
+    			append_dev(div8, div7);
+    			append_dev(div7, t20);
+    			append_dev(div7, span3);
+    			append_dev(div7, t22);
+    			append_dev(div17, t23);
+    			append_dev(div17, div10);
+    			mount_component(icon4, div10, null);
+    			append_dev(div10, t24);
+    			append_dev(div10, div9);
+    			append_dev(div9, t25);
+    			append_dev(div9, span4);
+    			append_dev(div9, t27);
+    			append_dev(div17, t28);
+    			append_dev(div17, div12);
+    			mount_component(icon5, div12, null);
+    			append_dev(div12, t29);
+    			append_dev(div12, div11);
+    			append_dev(div11, t30);
+    			append_dev(div11, span5);
+    			append_dev(div11, t32);
+    			append_dev(div17, t33);
+    			append_dev(div17, div14);
+    			mount_component(icon6, div14, null);
+    			append_dev(div14, t34);
+    			append_dev(div14, div13);
+    			append_dev(div13, t35);
+    			append_dev(div13, span6);
+    			append_dev(div13, t37);
+    			append_dev(div17, t38);
+    			append_dev(div17, div16);
+    			mount_component(icon7, div16, null);
+    			append_dev(div16, t39);
+    			append_dev(div16, div15);
+    			current = true;
     		},
     		p: noop,
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(icon0.$$.fragment, local);
+    			transition_in(icon1.$$.fragment, local);
+    			transition_in(icon2.$$.fragment, local);
+    			transition_in(icon3.$$.fragment, local);
+    			transition_in(icon4.$$.fragment, local);
+    			transition_in(icon5.$$.fragment, local);
+    			transition_in(icon6.$$.fragment, local);
+    			transition_in(icon7.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(icon0.$$.fragment, local);
+    			transition_out(icon1.$$.fragment, local);
+    			transition_out(icon2.$$.fragment, local);
+    			transition_out(icon3.$$.fragment, local);
+    			transition_out(icon4.$$.fragment, local);
+    			transition_out(icon5.$$.fragment, local);
+    			transition_out(icon6.$$.fragment, local);
+    			transition_out(icon7.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div18);
+    			destroy_component(icon0);
+    			destroy_component(icon1);
+    			destroy_component(icon2);
+    			destroy_component(icon3);
+    			destroy_component(icon4);
+    			destroy_component(icon5);
+    			destroy_component(icon6);
+    			destroy_component(icon7);
     		}
     	};
 
@@ -123111,9 +123447,9 @@ var app = (function () {
     			div0 = element("div");
     			info.block.c();
     			attr_dev(div0, "class", "right-menu-item");
-    			add_location(div0, file, 437, 2, 14196);
+    			add_location(div0, file, 437, 2, 14202);
     			attr_dev(div1, "class", "side-menu-right");
-    			add_location(div1, file, 436, 1, 14111);
+    			add_location(div1, file, 436, 1, 14117);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -123237,19 +123573,19 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(h4, file, 439, 4, 14270);
+    			add_location(h4, file, 439, 4, 14276);
     			attr_dev(i, "id", "description");
-    			add_location(i, file, 440, 4, 14296);
-    			add_location(br, file, 440, 46, 14338);
-    			add_location(hr, file, 441, 4, 14349);
+    			add_location(i, file, 440, 4, 14302);
+    			add_location(br, file, 440, 46, 14344);
+    			add_location(hr, file, 441, 4, 14355);
     			attr_dev(th0, "id", "col1");
-    			add_location(th0, file, 445, 7, 14402);
+    			add_location(th0, file, 445, 7, 14408);
     			attr_dev(th1, "id", "col2");
-    			add_location(th1, file, 446, 7, 14440);
-    			add_location(tr, file, 444, 6, 14389);
-    			add_location(thead, file, 443, 5, 14374);
-    			add_location(tbody, file, 449, 5, 14500);
-    			add_location(table, file, 442, 4, 14360);
+    			add_location(th1, file, 446, 7, 14446);
+    			add_location(tr, file, 444, 6, 14395);
+    			add_location(thead, file, 443, 5, 14380);
+    			add_location(tbody, file, 449, 5, 14506);
+    			add_location(table, file, 442, 4, 14366);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h4, anchor);
@@ -123350,10 +123686,10 @@ var app = (function () {
     			t2 = text(t2_value);
     			t3 = space();
     			attr_dev(td0, "id", "col1");
-    			add_location(td0, file, 452, 8, 14563);
+    			add_location(td0, file, 452, 8, 14569);
     			attr_dev(td1, "id", "col2");
-    			add_location(td1, file, 453, 8, 14602);
-    			add_location(tr, file, 451, 7, 14549);
+    			add_location(td1, file, 453, 8, 14608);
+    			add_location(tr, file, 451, 7, 14555);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -123444,11 +123780,11 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = 'All';
     			input.value = input.__value;
-    			add_location(input, file, 465, 4, 14861);
+    			add_location(input, file, 465, 4, 14867);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 464, 3, 14833);
+    			add_location(label, file, 464, 3, 14839);
     			attr_dev(div, "class", "wsbar");
-    			add_location(div, file, 463, 2, 14765);
+    			add_location(div, file, 463, 2, 14771);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -123579,11 +123915,11 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = input_value_value = /*ws*/ ctx[52];
     			input.value = input.__value;
-    			add_location(input, file, 470, 5, 15110);
+    			add_location(input, file, 470, 5, 15116);
     			attr_dev(span, "class", "ws");
-    			add_location(span, file, 471, 5, 15240);
+    			add_location(span, file, 471, 5, 15246);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 469, 4, 15081);
+    			add_location(label, file, 469, 4, 15087);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -123641,29 +123977,46 @@ var app = (function () {
 
     // (477:1) {#if helpActive}
     function create_if_block(ctx) {
+    	let div;
     	let help;
+    	let div_transition;
     	let current;
     	help = new Help({ $$inline: true });
 
     	const block = {
     		c: function create() {
+    			div = element("div");
     			create_component(help.$$.fragment);
+    			attr_dev(div, "class", "help-menu");
+    			add_location(div, file, 477, 2, 15341);
     		},
     		m: function mount(target, anchor) {
-    			mount_component(help, target, anchor);
+    			insert_dev(target, div, anchor);
+    			mount_component(help, div, null);
     			current = true;
     		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(help.$$.fragment, local);
+
+    			add_render_callback(() => {
+    				if (!current) return;
+    				if (!div_transition) div_transition = create_bidirectional_transition(div, fade, {}, true);
+    				div_transition.run(1);
+    			});
+
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(help.$$.fragment, local);
+    			if (!div_transition) div_transition = create_bidirectional_transition(div, fade, {}, false);
+    			div_transition.run(0);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			destroy_component(help, detaching);
+    			if (detaching) detach_dev(div);
+    			destroy_component(help);
+    			if (detaching && div_transition) div_transition.end();
     		}
     	};
 
@@ -123851,67 +124204,67 @@ var app = (function () {
     			t27 = space();
     			if (if_block2) if_block2.c();
     			attr_dev(div, "id", "viewer-container");
-    			add_location(div, file, 393, 1, 11674);
+    			add_location(div, file, 393, 1, 11680);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", ".ifc");
-    			add_location(input, file, 401, 2, 11884);
+    			add_location(input, file, 401, 2, 11890);
     			attr_dev(span0, "class", "tooltip");
-    			add_location(span0, file, 404, 3, 12161);
+    			add_location(span0, file, 404, 3, 12167);
     			attr_dev(button0, "class", "button");
     			toggle_class(button0, "non-active", !/*disabledButtons*/ ctx[10]);
-    			add_location(button0, file, 402, 2, 11993);
-    			add_location(p0, file, 408, 25, 12446);
+    			add_location(button0, file, 402, 2, 11999);
+    			add_location(p0, file, 408, 25, 12452);
     			attr_dev(span1, "class", "tooltip");
-    			add_location(span1, file, 408, 3, 12424);
+    			add_location(span1, file, 408, 3, 12430);
     			attr_dev(button1, "class", "button");
     			toggle_class(button1, "selected", /*hideActive*/ ctx[4]);
     			toggle_class(button1, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button1, file, 406, 2, 12229);
-    			add_location(p1, file, 412, 25, 12720);
+    			add_location(button1, file, 406, 2, 12235);
+    			add_location(p1, file, 412, 25, 12726);
     			attr_dev(span2, "class", "tooltip");
-    			add_location(span2, file, 412, 3, 12698);
+    			add_location(span2, file, 412, 3, 12704);
     			attr_dev(button2, "class", "button");
     			toggle_class(button2, "selected", /*isolateActive*/ ctx[5]);
     			toggle_class(button2, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button2, file, 410, 2, 12494);
-    			add_location(p2, file, 416, 25, 12983);
+    			add_location(button2, file, 410, 2, 12500);
+    			add_location(p2, file, 416, 25, 12989);
     			attr_dev(span3, "class", "tooltip");
-    			add_location(span3, file, 416, 3, 12961);
+    			add_location(span3, file, 416, 3, 12967);
     			attr_dev(button3, "class", "button");
     			toggle_class(button3, "selected", /*clipperActive*/ ctx[6]);
     			toggle_class(button3, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button3, file, 414, 2, 12770);
-    			add_location(p3, file, 420, 25, 13248);
+    			add_location(button3, file, 414, 2, 12776);
+    			add_location(p3, file, 420, 25, 13254);
     			attr_dev(span4, "class", "tooltip");
-    			add_location(span4, file, 420, 3, 13226);
+    			add_location(span4, file, 420, 3, 13232);
     			attr_dev(button4, "class", "button");
     			toggle_class(button4, "selected", /*measuresActive*/ ctx[9]);
     			toggle_class(button4, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button4, file, 418, 2, 13031);
-    			add_location(p4, file, 424, 25, 13536);
+    			add_location(button4, file, 418, 2, 13037);
+    			add_location(p4, file, 424, 25, 13542);
     			attr_dev(span5, "class", "tooltip");
-    			add_location(span5, file, 424, 3, 13514);
+    			add_location(span5, file, 424, 3, 13520);
     			attr_dev(button5, "class", "button");
     			toggle_class(button5, "selected", /*transparentActive*/ ctx[7]);
     			toggle_class(button5, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button5, file, 422, 2, 13298);
-    			add_location(p5, file, 428, 25, 13808);
+    			add_location(button5, file, 422, 2, 13304);
+    			add_location(p5, file, 428, 25, 13814);
     			attr_dev(span6, "class", "tooltip");
-    			add_location(span6, file, 428, 3, 13786);
+    			add_location(span6, file, 428, 3, 13792);
     			attr_dev(button6, "class", "button");
     			toggle_class(button6, "selected", /*detailsActive*/ ctx[8]);
     			toggle_class(button6, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button6, file, 426, 2, 13595);
-    			add_location(p6, file, 432, 25, 14029);
+    			add_location(button6, file, 426, 2, 13601);
+    			add_location(p6, file, 432, 25, 14035);
     			attr_dev(span7, "class", "tooltip");
-    			add_location(span7, file, 432, 3, 14007);
+    			add_location(span7, file, 432, 3, 14013);
     			attr_dev(button7, "class", "button");
     			toggle_class(button7, "selected", /*helpActive*/ ctx[3]);
-    			add_location(button7, file, 430, 2, 13862);
+    			add_location(button7, file, 430, 2, 13868);
     			attr_dev(aside, "class", "toolbar");
-    			add_location(aside, file, 400, 1, 11857);
-    			add_location(main, file, 392, 0, 11665);
+    			add_location(aside, file, 400, 1, 11863);
+    			add_location(main, file, 392, 0, 11671);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -124709,6 +125062,7 @@ var app = (function () {
     	$$self.$capture_state = () => ({
     		onMount,
     		fly,
+    		fade,
     		cubicInOut,
     		Color,
     		MeshLambertMaterial,
