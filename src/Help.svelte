@@ -4,8 +4,8 @@
 
 <div class='help-container'>
     <div class='help-heading'>
-        <h1>Hoe werkt de IFC-viewer?</h1>
-        <h4>Klik op de knop met de gewenste functionaliteit om deze te activeren. Hiervoor kan ook het toetsenbord gebruikt worden; de eerste letter (in het <span>groen</span>) geeft aan welke toets daarvoor nodig is. Klik daarna op een element om de bewerking toe te passen. Wisselen van werkstation en deactiveren van de knop reset de bewerkingen.</h4>
+        <h1>Gebruiksaanwijzing IFC-viewer</h1>
+        <h4>Klik op de knop met de gewenste functionaliteit om deze te activeren. Hiervoor kan ook het toetsenbord gebruikt worden; de eerste letter (in het <span>groen</span>) geeft aan welke toets daarvoor nodig is. Klik daarna op een element om de bewerking toe te passen.</h4>
     </div>
     <div class='help-table'>
         <div class='help-row'>
@@ -38,7 +38,7 @@
         </div>
         <div class='help-row'>
             <Icon name='all' class='icon help-icon'/>
-            <div class='button-explanation'>De knoppen onderin geven de elementen per werkstation weer. Let op: het wisselen van de werkstations reset wel de knoppen.</div>
+            <div class='button-explanation'>De knoppen in deze rij geven de elementen in de desbetreffende werkstations weer.</div>
         </div>
     </div>
 

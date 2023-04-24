@@ -1,18 +1,19 @@
 <script>
-	import { onMount } from 'svelte';
-	import { fly, fade } from 'svelte/transition';
-	import { cubicInOut } from 'svelte/easing';
-	import { Color, MeshLambertMaterial } from "three";
-	import { IfcViewerAPI } from "web-ifc-viewer";
 	import Icon from './Icon.svelte';
 	import Help from './Help.svelte';
+	import { onMount } from 'svelte';
+	import { cubicInOut } from 'svelte/easing';
+	import { fly, fade } from 'svelte/transition';
+	import { IfcViewerAPI } from "web-ifc-viewer";
+	import { Color, MeshLambertMaterial } from "three";
+	
 
 	let fileInput;
 	let container;
 	let viewer;
 	let propertyData;
 
-	let helpActive;
+	let helpActive = false;
 	let selectionActive = true;
 	let hideActive = false;
 	let isolateActive = false;
@@ -42,6 +43,16 @@
 	onMount(async () => {
 	//------------------- Creates the viewer -------------------
 		viewer = setupScene(container);
+		let query = window.location.search;
+		let urlParams = new URLSearchParams(query);
+		if (urlParams.has('file')) {
+			try {
+				let file = urlParams.get('file');
+				await loadQueryIfc(file);
+			} catch (e) {
+				console.log('Error while trying to load IFC from query parameters.')
+			}
+		}
 	})
 	
 	function setupScene(container) {
@@ -55,6 +66,23 @@
     	})
 		viewer.IFC.setWasmPath("wasm/");
 		return viewer;
+	}
+
+	async function loadQueryIfc(file) {
+	//------------------- Loads IFC from Query parameters -------------------
+		const model = await viewer.IFC.loadIfc(file);
+		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
+		let JSONdata = await JSONblob[0].text();
+		JSONdata = JSON.parse(JSONdata);
+		const results = await createWsArray(JSONdata, model);
+		[workstations, wsObject] = results;
+
+		createSubsets(viewer, model, wsObject);
+		replaceModelBySubset(viewer, model, "All");
+
+		propertyData = await getItemProperties(model.modelID);
+		disabledButtons = false;
+
 	}
 
 	const loadIfc = async (event) => {
@@ -79,11 +107,7 @@
 		switch (e.code) {
 			case 'Escape':
 				viewer.clipper.active && viewer.clipper.deleteAllPlanes();
-				if (measuresActive) {
-					measuresActive = !measuresActive;
-					viewer.dimensions.previewActive = measuresActive;
-					viewer.dimensions.deleteAll();
-				}
+				measuresActive && toggleDimensions();
 				break;
 			case 'KeyV':
 				toggleHide(workstation);
@@ -94,35 +118,30 @@
 			case 'KeyT':
 				toggleTransparent(workstation);
 				break;
-			case 'KeyD':
-				toggleDetails();
-				break;
 			case 'KeyC':
 				toggleClipper();
 				break;
 			case 'KeyM':
 				toggleDimensions();
 				break;
+			case 'KeyD':
+				detailsActive = !detailsActive;
+				break;
 			case 'KeyH':
-				toggleHelp();
+				helpActive = !helpActive;
 				break;
 		};
 	}
 
 	function handleDoubleClick() {
-		if (viewer.clipper.active) {
-			viewer.clipper.createPlane();
-		}	else if (measuresActive) {
-			viewer.dimensions.create();
-		}
+	//------------------- Handles double click -------------------
+		viewer.clipper.active && viewer.clipper.createPlane();
+		measuresActive && viewer.dimensions.create();
 	}
 
 	async function prePickItem() {
 	//------------------- Pre-picks item -------------------
-		if (selectionActive) {
-			await viewer.IFC.selector.prePickIfcItem();
-		}
-
+		selectionActive && await viewer.IFC.selector.prePickIfcItem();
 	}
 
 	async function pickItem() {
@@ -180,11 +199,9 @@
 	//------------------- Plane Button -------------------
 		clipperActive = !clipperActive;
 		viewer.clipper.active = clipperActive;
-	}
-
-	function toggleDetails() {
-	//------------------- Details Button -------------------
-		detailsActive = !detailsActive;
+		if (clipperActive) {
+			measuresActive && toggleDimensions();
+		}
 	}
 
 	function toggleTransparent(ws) {
@@ -195,18 +212,16 @@
 
 	function toggleDimensions() {
 	//------------------- Dimensions Button -------------------
-		if(measuresActive) {
-			measuresActive = !measuresActive;
+		measuresActive = !measuresActive;
+		selectionActive = !measuresActive;
+		viewer.dimensions.previewActive = measuresActive;
+		if (!measuresActive) {
 			viewer.dimensions.deleteAll();
-			viewer.dimensions.previewActive = measuresActive;
-			selectionActive = !measuresActive;
 		} else {
-			measuresActive = !measuresActive;
 			viewer.dimensions.active = measuresActive;
-			viewer.dimensions.previewActive = measuresActive;
 			viewer.IFC.selector.unPrepickIfcItems();
 			viewer.IFC.selector.unpickIfcItems();
-			selectionActive = !measuresActive;
+			clipperActive && toggleClipper();
 		};
 	}
 
@@ -225,12 +240,6 @@
 		transparentActive && showTransparentWS(ws);
 		isolateActive = false;
 		hideActive = false;
-	}
-
-	function toggleHelp() {
-	//------------------- Help Button -------------------
-		helpActive = !helpActive;
-		console.log('help')
 	}
 
 	async function createWsArray(JSONdata, model) {
@@ -424,11 +433,11 @@
 			<Icon name='transparent' class='icon'/>
 			<span class='tooltip'><p>Transparante vorige stations</p></span>
 		</button>
-		<button class='button' class:selected="{detailsActive}" class:non-active="{disabledButtons}" on:click={toggleDetails} on:keydown={handleKeyPress}>
+		<button class='button' class:selected="{detailsActive}" class:non-active="{disabledButtons}" on:click={() => {detailsActive = !detailsActive;}} on:keydown={handleKeyPress}>
 			<Icon name='details' class='icon'/>
 			<span class='tooltip'><p>Details van het element</p></span>
 		</button>
-		<button class='button' class:selected="{helpActive}" on:click={toggleHelp} on:keydown={handleKeyPress}>
+		<button class='button' class:selected="{helpActive}" on:click={() => {helpActive = !helpActive;}} on:keydown={handleKeyPress}>
 			<Icon name='help' class='icon'/>
 			<span class='tooltip'><p>Hulp voor de viewer</p></span>
 		</button>
