@@ -306,6 +306,7 @@ hr {
 
 .help-table {
     display: grid;
+    padding: 1rem 0rem;
 }
 
 .help-row {
