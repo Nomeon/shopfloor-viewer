@@ -123447,9 +123447,9 @@ var app = (function () {
     			div0 = element("div");
     			info.block.c();
     			attr_dev(div0, "class", "right-menu-item");
-    			add_location(div0, file, 446, 2, 14800);
+    			add_location(div0, file, 446, 2, 14891);
     			attr_dev(div1, "class", "side-menu-right");
-    			add_location(div1, file, 445, 1, 14715);
+    			add_location(div1, file, 445, 1, 14806);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -123573,19 +123573,19 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(h4, file, 448, 4, 14874);
+    			add_location(h4, file, 448, 4, 14965);
     			attr_dev(i, "id", "description");
-    			add_location(i, file, 449, 4, 14900);
-    			add_location(br, file, 449, 46, 14942);
-    			add_location(hr, file, 450, 4, 14953);
+    			add_location(i, file, 449, 4, 14991);
+    			add_location(br, file, 449, 46, 15033);
+    			add_location(hr, file, 450, 4, 15044);
     			attr_dev(th0, "id", "col1");
-    			add_location(th0, file, 454, 7, 15006);
+    			add_location(th0, file, 454, 7, 15097);
     			attr_dev(th1, "id", "col2");
-    			add_location(th1, file, 455, 7, 15044);
-    			add_location(tr, file, 453, 6, 14993);
-    			add_location(thead, file, 452, 5, 14978);
-    			add_location(tbody, file, 458, 5, 15104);
-    			add_location(table, file, 451, 4, 14964);
+    			add_location(th1, file, 455, 7, 15135);
+    			add_location(tr, file, 453, 6, 15084);
+    			add_location(thead, file, 452, 5, 15069);
+    			add_location(tbody, file, 458, 5, 15195);
+    			add_location(table, file, 451, 4, 15055);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h4, anchor);
@@ -123686,10 +123686,10 @@ var app = (function () {
     			t2 = text(t2_value);
     			t3 = space();
     			attr_dev(td0, "id", "col1");
-    			add_location(td0, file, 461, 8, 15167);
+    			add_location(td0, file, 461, 8, 15258);
     			attr_dev(td1, "id", "col2");
-    			add_location(td1, file, 462, 8, 15206);
-    			add_location(tr, file, 460, 7, 15153);
+    			add_location(td1, file, 462, 8, 15297);
+    			add_location(tr, file, 460, 7, 15244);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -123780,11 +123780,11 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = 'All';
     			input.value = input.__value;
-    			add_location(input, file, 474, 4, 15465);
+    			add_location(input, file, 474, 4, 15556);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 473, 3, 15437);
+    			add_location(label, file, 473, 3, 15528);
     			attr_dev(div, "class", "wsbar");
-    			add_location(div, file, 472, 2, 15369);
+    			add_location(div, file, 472, 2, 15460);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -123915,11 +123915,11 @@ var app = (function () {
     			attr_dev(input, "type", "radio");
     			input.__value = input_value_value = /*ws*/ ctx[53];
     			input.value = input.__value;
-    			add_location(input, file, 479, 5, 15714);
+    			add_location(input, file, 479, 5, 15805);
     			attr_dev(span, "class", "ws");
-    			add_location(span, file, 480, 5, 15844);
+    			add_location(span, file, 480, 5, 15935);
     			attr_dev(label, "class", "button");
-    			add_location(label, file, 478, 4, 15685);
+    			add_location(label, file, 478, 4, 15776);
     			binding_group.p(input);
     		},
     		m: function mount(target, anchor) {
@@ -123988,7 +123988,7 @@ var app = (function () {
     			div = element("div");
     			create_component(help.$$.fragment);
     			attr_dev(div, "class", "help-menu");
-    			add_location(div, file, 486, 2, 15939);
+    			add_location(div, file, 486, 2, 16030);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -124204,67 +124204,67 @@ var app = (function () {
     			t27 = space();
     			if (if_block2) if_block2.c();
     			attr_dev(div, "id", "viewer-container");
-    			add_location(div, file, 402, 1, 12229);
+    			add_location(div, file, 402, 1, 12320);
     			set_style(input, "display", "none");
     			attr_dev(input, "type", "file");
     			attr_dev(input, "accept", ".ifc");
-    			add_location(input, file, 410, 2, 12439);
+    			add_location(input, file, 410, 2, 12530);
     			attr_dev(span0, "class", "tooltip");
-    			add_location(span0, file, 413, 3, 12716);
+    			add_location(span0, file, 413, 3, 12807);
     			attr_dev(button0, "class", "button");
     			toggle_class(button0, "non-active", !/*disabledButtons*/ ctx[10]);
-    			add_location(button0, file, 411, 2, 12548);
-    			add_location(p0, file, 417, 25, 13001);
+    			add_location(button0, file, 411, 2, 12639);
+    			add_location(p0, file, 417, 25, 13092);
     			attr_dev(span1, "class", "tooltip");
-    			add_location(span1, file, 417, 3, 12979);
+    			add_location(span1, file, 417, 3, 13070);
     			attr_dev(button1, "class", "button");
     			toggle_class(button1, "selected", /*hideActive*/ ctx[4]);
     			toggle_class(button1, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button1, file, 415, 2, 12784);
-    			add_location(p1, file, 421, 25, 13275);
+    			add_location(button1, file, 415, 2, 12875);
+    			add_location(p1, file, 421, 25, 13366);
     			attr_dev(span2, "class", "tooltip");
-    			add_location(span2, file, 421, 3, 13253);
+    			add_location(span2, file, 421, 3, 13344);
     			attr_dev(button2, "class", "button");
     			toggle_class(button2, "selected", /*isolateActive*/ ctx[5]);
     			toggle_class(button2, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button2, file, 419, 2, 13049);
-    			add_location(p2, file, 425, 25, 13538);
+    			add_location(button2, file, 419, 2, 13140);
+    			add_location(p2, file, 425, 25, 13629);
     			attr_dev(span3, "class", "tooltip");
-    			add_location(span3, file, 425, 3, 13516);
+    			add_location(span3, file, 425, 3, 13607);
     			attr_dev(button3, "class", "button");
     			toggle_class(button3, "selected", /*clipperActive*/ ctx[6]);
     			toggle_class(button3, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button3, file, 423, 2, 13325);
-    			add_location(p3, file, 429, 25, 13803);
+    			add_location(button3, file, 423, 2, 13416);
+    			add_location(p3, file, 429, 25, 13894);
     			attr_dev(span4, "class", "tooltip");
-    			add_location(span4, file, 429, 3, 13781);
+    			add_location(span4, file, 429, 3, 13872);
     			attr_dev(button4, "class", "button");
     			toggle_class(button4, "selected", /*measuresActive*/ ctx[9]);
     			toggle_class(button4, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button4, file, 427, 2, 13586);
-    			add_location(p4, file, 433, 25, 14091);
+    			add_location(button4, file, 427, 2, 13677);
+    			add_location(p4, file, 433, 25, 14182);
     			attr_dev(span5, "class", "tooltip");
-    			add_location(span5, file, 433, 3, 14069);
+    			add_location(span5, file, 433, 3, 14160);
     			attr_dev(button5, "class", "button");
     			toggle_class(button5, "selected", /*transparentActive*/ ctx[7]);
     			toggle_class(button5, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button5, file, 431, 2, 13853);
-    			add_location(p5, file, 437, 25, 14389);
+    			add_location(button5, file, 431, 2, 13944);
+    			add_location(p5, file, 437, 25, 14480);
     			attr_dev(span6, "class", "tooltip");
-    			add_location(span6, file, 437, 3, 14367);
+    			add_location(span6, file, 437, 3, 14458);
     			attr_dev(button6, "class", "button");
     			toggle_class(button6, "selected", /*detailsActive*/ ctx[8]);
     			toggle_class(button6, "non-active", /*disabledButtons*/ ctx[10]);
-    			add_location(button6, file, 435, 2, 14150);
-    			add_location(p6, file, 441, 25, 14633);
+    			add_location(button6, file, 435, 2, 14241);
+    			add_location(p6, file, 441, 25, 14724);
     			attr_dev(span7, "class", "tooltip");
-    			add_location(span7, file, 441, 3, 14611);
+    			add_location(span7, file, 441, 3, 14702);
     			attr_dev(button7, "class", "button");
     			toggle_class(button7, "selected", /*helpActive*/ ctx[3]);
-    			add_location(button7, file, 439, 2, 14443);
+    			add_location(button7, file, 439, 2, 14534);
     			attr_dev(aside, "class", "toolbar");
-    			add_location(aside, file, 409, 1, 12412);
-    			add_location(main, file, 401, 0, 12220);
+    			add_location(aside, file, 409, 1, 12503);
+    			add_location(main, file, 401, 0, 12311);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -124578,7 +124578,7 @@ var app = (function () {
     }
 
     async function createWsArray(JSONdata, model) {
-    	//------------------- Creates arrays of workstations and IDs -------------------
+    	//------------------- Creates [workstations] and {ws: [ids]} -------------------
     	let elementProp = [];
 
     	let workStations = [];
@@ -124653,7 +124653,7 @@ var app = (function () {
     		});
 
     	onMount(async () => {
-    		//------------------- Creates the viewer -------------------
+    		//------------------- Creates the viewer and gets the query parameters -------------------
     		viewer = setupScene(container);
 
     		let query = window.location.search;
@@ -124701,7 +124701,7 @@ var app = (function () {
     	}
 
     	const loadIfc = async event => {
-    		//------------------- Loading IFC -------------------
+    		//------------------- Loads IFC from file selection -------------------
     		const model = await viewer.IFC.loadIfc(event.target.files[0]);
 
     		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
@@ -124747,7 +124747,7 @@ var app = (function () {
     	}
 
     	function handleDoubleClick() {
-    		//------------------- Handles double click -------------------
+    		//------------------- Handles double click events -------------------
     		viewer.clipper.active && viewer.clipper.createPlane();
 
     		measuresActive && viewer.dimensions.create();
@@ -124813,7 +124813,7 @@ var app = (function () {
     	}
 
     	function toggleClipper() {
-    		//------------------- Plane Button -------------------
+    		//------------------- Section Plane Button -------------------
     		$$invalidate(6, clipperActive = !clipperActive);
 
     		viewer.clipper.active = clipperActive;
@@ -124873,7 +124873,7 @@ var app = (function () {
     	}
 
     	function createSubsets(viewer, model, objects) {
-    		//------------------- Creates subsets -------------------
+    		//------------------- Creates subsets for each workstation -------------------
     		const scene = viewer.context.getScene();
 
     		for (const key in objects) {
@@ -124986,7 +124986,7 @@ var app = (function () {
     	}
 
     	async function getPropertyGroups(values) {
-    		//------------------- Gets S parameters of item -------------------
+    		//------------------- Gets custom S parameters of item -------------------
     		const props = await values;
 
     		const properties = await viewer.IFC.getProperties(activeModel.modelID, props.expressID, true, true);

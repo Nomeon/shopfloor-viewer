@@ -41,7 +41,7 @@
 
 
 	onMount(async () => {
-	//------------------- Creates the viewer -------------------
+	//------------------- Creates the viewer and gets the query parameters -------------------
 		viewer = setupScene(container);
 		let query = window.location.search;
 		let urlParams = new URLSearchParams(query);
@@ -86,7 +86,7 @@
 	}
 
 	const loadIfc = async (event) => {
-	//------------------- Loading IFC -------------------
+	//------------------- Loads IFC from file selection -------------------
 		const model = await viewer.IFC.loadIfc(event.target.files[0]);
 
 		let JSONblob = await viewer.IFC.properties.serializeAllProperties(model);
@@ -134,7 +134,7 @@
 	}
 
 	function handleDoubleClick() {
-	//------------------- Handles double click -------------------
+	//------------------- Handles double click events -------------------
 		viewer.clipper.active && viewer.clipper.createPlane();
 		measuresActive && viewer.dimensions.create();
 	}
@@ -196,7 +196,7 @@
 	}
 
 	function toggleClipper() {
-	//------------------- Plane Button -------------------
+	//------------------- Section Plane Button -------------------
 		clipperActive = !clipperActive;
 		viewer.clipper.active = clipperActive;
 		if (clipperActive) {
@@ -243,7 +243,7 @@
 	}
 
 	async function createWsArray(JSONdata, model) {
-	//------------------- Creates arrays of workstations and IDs -------------------
+	//------------------- Creates [workstations] and {ws: [ids]} -------------------
 		let elementProp = [];
 		let workStations = [];
 
@@ -273,7 +273,7 @@
 	}
 
 	function createSubsets(viewer, model, objects) {
-	//------------------- Creates subsets -------------------
+	//------------------- Creates subsets for each workstation -------------------
 		const scene = viewer.context.getScene();
 
 		for (const key in objects) {
@@ -371,7 +371,7 @@
 	}
 
 	async function getPropertyGroups(values) {
-	//------------------- Gets S parameters of item -------------------
+	//------------------- Gets custom S parameters of item -------------------
 		const props = await values;
 		const properties = await viewer.IFC.getProperties(activeModel.modelID, props.expressID, true, true);
 
